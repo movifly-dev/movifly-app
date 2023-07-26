@@ -1,10 +1,11 @@
 import * as React from "react";
-import { useColorScheme } from "react-native";
+import { TouchableOpacity, useColorScheme } from "react-native";
 
 import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
+  useNavigation,
 } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -16,22 +17,20 @@ import { StatusBar } from "expo-status-bar";
 
 // [IMPORT] =========== CLIENT SCREENS
 
-import Home from "../screens/Home";
-import ClientsRegister from "../screens/ClientsRegister";
-import ClientsListing from "../screens/ClientsListing";
-import TicketsRegister from "../screens/TicketRegister";
-import TicketsListing from "../screens/TicketListing";
-import ChecklistNextFlights from "../screens/ChecklistNextFlights";
-import ProfitCalculator from "../screens/ProfitCalculator";
-import InfoExportation from "../screens/InfoExportation";
+import HomeView from "../screens/Home";
+import ClientsRegisterView from "../screens/ClientsRegister";
+import ClientsListingView from "../screens/ClientsListing";
+import TicketsRegisterView from "../screens/TicketRegister";
+import TicketsListingView from "../screens/TicketListing";
+import ChecklistNextFlightsView from "../screens/ChecklistNextFlights";
+import ProfitCalculatorView from "../screens/ProfitCalculator";
+import InfoExportationView from "../screens/InfoExportation";
 
 // =================================================== MAIN STACK GROUP
 
 const MainStackGroup = createNativeStackNavigator();
 
-// ---------- CLIENT
-
-function ClientStackGroup() {
+function BaseStackGroup() {
   return (
     <MainStackGroup.Navigator>
       <MainStackGroup.Screen
@@ -60,17 +59,21 @@ const Tab = createBottomTabNavigator();
 // ---------- CLIENT
 
 function ClientTabsGroup() {
+  const navigation = useNavigation();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "Home") {
+          if (route.name === "HomeTab") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Travel") {
-            iconName = focused ? "car" : "car-outline";
-          } else if (route.name === "Account") {
-            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "ClientsTab") {
+            iconName = focused ? "ios-people" : "people-outline";
+          } else if (route.name === "TicketsTab") {
+            iconName = focused ? "barcode" : "barcode-outline";
+          } else if (route.name === "ToolsTab") {
+            iconName = focused ? "ios-settings" : "settings-outline";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -78,16 +81,66 @@ function ClientTabsGroup() {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={Home} options={{ title: "Início" }} />
       <Tab.Screen
-        name="Travel"
-        component={ClientsTopTabs}
-        options={{ title: "Clientes" }}
+        name="HomeTab"
+        component={HomeView}
+        options={{
+          title: "Início",
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Ionicons name="md-menu" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+        screenOptions={{}}
       />
       <Tab.Screen
-        name="Account"
+        name="ClientsTab"
+        component={ClientsTopTabs}
+        options={{
+          title: "Clientes",
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Ionicons name="md-menu" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="TicketsTab"
         component={TicketsTopTabs}
-        options={{ title: "Bilhetes" }}
+        options={{
+          title: "Bilhetes",
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Ionicons name="md-menu" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ToolsTab"
+        component={ToolsTopTabs}
+        options={{
+          title: "Ferramentas",
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Ionicons name="md-menu" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
     </Tab.Navigator>
   );
@@ -97,7 +150,7 @@ function ClientTabsGroup() {
 
 const TopTabs = createMaterialTopTabNavigator();
 
-// ---------- TRAVELS
+// ---------- CLIENTS
 
 function ClientsTopTabs() {
   return (
@@ -116,14 +169,14 @@ function ClientsTopTabs() {
     >
       <TopTabs.Screen
         name="ClientsRegister"
-        component={ClientsRegister}
+        component={ClientsRegisterView}
         options={{
           tabBarLabel: "Cadastro de Clientes",
         }}
       />
       <TopTabs.Screen
         name="ClientsListing"
-        component={ClientsListing}
+        component={ClientsListingView}
         options={{
           tabBarLabel: "Listagem de Clientes",
         }}
@@ -132,7 +185,7 @@ function ClientsTopTabs() {
   );
 }
 
-// ---------- ACCOUNT
+// ---------- TICKETS
 
 function TicketsTopTabs() {
   return (
@@ -151,14 +204,14 @@ function TicketsTopTabs() {
     >
       <TopTabs.Screen
         name="TicketsRegister"
-        component={TicketsRegister}
+        component={TicketsRegisterView}
         options={{
           tabBarLabel: "Registros de Bilhetes",
         }}
       />
       <TopTabs.Screen
         name="TicketsListing"
-        component={TicketsListing}
+        component={TicketsListingView}
         options={{
           tabBarLabel: "Listagem de Bilhetes",
         }}
@@ -167,16 +220,38 @@ function TicketsTopTabs() {
   );
 }
 
-// =================================================== CLIENT NAVIGATORS
+// ---------- TOOLS
 
-export function ClientNavigation() {
-  const theme = useColorScheme();
+function ToolsTopTabs() {
   return (
-    <NavigationContainer theme={theme === "dark" ? DarkTheme : DefaultTheme}>
-      <StatusBar style="auto" />
-      {/* <ClientStackGroup /> */}
-      <DrawerClient />
-    </NavigationContainer>
+    <TopTabs.Navigator
+      screenOptions={{
+        tabBarLabelStyle: {
+          textTransform: "capitalize",
+          fontWeight: "bold",
+        },
+        tabBarIndicatorStyle: {
+          height: 5,
+          borderRadius: 5,
+          backgroundColor: "#1DA1F2",
+        },
+      }}
+    >
+      <TopTabs.Screen
+        name="ProfitCalculator"
+        component={ProfitCalculatorView}
+        options={{
+          tabBarLabel: "Calculadora de Lucro",
+        }}
+      />
+      <TopTabs.Screen
+        name="InfoExportation"
+        component={InfoExportationView}
+        options={{
+          tabBarLabel: "Exportar Informação",
+        }}
+      />
+    </TopTabs.Navigator>
   );
 }
 
@@ -184,68 +259,98 @@ export function ClientNavigation() {
 
 const Drawer = createDrawerNavigator();
 
-// // ---------- CLIENT
-
 function DrawerClient() {
   return (
     <Drawer.Navigator>
       <Drawer.Screen
         name="Home"
-        component={ClientStackGroup}
+        component={BaseStackGroup}
         options={({ navigation }) => ({
           title: "Home",
+          headerShown: false,
         })}
       />
       <Drawer.Screen
         name="ClientsRegister"
-        component={ClientsRegister}
+        component={ClientsRegisterView}
         options={({ navigation }) => ({
           title: "Cadastro de Clientes",
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
       <Drawer.Screen
         name="ClientsListing"
-        component={ClientsListing}
+        component={ClientsListingView}
         options={({ navigation }) => ({
           title: "Listagem de Clientes",
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
       <Drawer.Screen
         name="TicketsRegister"
-        component={TicketsRegister}
+        component={TicketsRegisterView}
         options={({ navigation }) => ({
           title: "Registros de Bilhetes",
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
       <Drawer.Screen
         name="TicketsListing"
-        component={TicketsListing}
+        component={TicketsListingView}
         options={({ navigation }) => ({
           title: "Listagem de Bilhetes",
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
       <Drawer.Screen
         name="ChecklistNextFlights"
-        component={ChecklistNextFlights}
+        component={ChecklistNextFlightsView}
         options={({ navigation }) => ({
           title: "Voos Próximos",
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
       <Drawer.Screen
         name="ProfitCalculator"
-        component={ProfitCalculator}
+        component={ProfitCalculatorView}
         options={({ navigation }) => ({
           title: "Calculadora de Lucro",
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
       <Drawer.Screen
         name="InfoExportation"
-        component={InfoExportation}
+        component={InfoExportationView}
         options={({ navigation }) => ({
           title: "Exportar Informação",
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
     </Drawer.Navigator>
+  );
+}
+
+function BackButton({ navigation }) {
+  return (
+    <TouchableOpacity
+      style={{ marginLeft: 10 }}
+      onPress={() => navigation && navigation.goBack()}
+    >
+      <Ionicons name="arrow-back-outline" size={26} color="black" />
+    </TouchableOpacity>
+  );
+}
+
+// =================================================== CLIENT NAVIGATORS
+
+export function MainNavigation() {
+  const theme = useColorScheme();
+  return (
+    <NavigationContainer theme={theme === "dark" ? DarkTheme : DefaultTheme}>
+      <StatusBar style="auto" />
+      {/* <ClientStackGroup /> */}
+      <DrawerClient />
+    </NavigationContainer>
   );
 }
 
