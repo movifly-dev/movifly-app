@@ -1,14 +1,13 @@
+/* eslint-disable no-unused-vars */
 import {
   AuthNavigation,
   AuthCodeConfirmation,
-} from "./navigation/AuthNavigation";
+} from './navigation/AuthNavigation';
 
-import { MainNavigation } from "./navigation/MainNavigation";
+import { MainNavigation } from './navigation/MainNavigation';
 
-import { useAuth } from "./contexts/AuthContext";
-import { MainProvider } from "./contexts/MainContext";
-
-import { Loading } from "./components";
+import { useAuth } from './contexts/AuthContext';
+import { MainProvider } from './contexts/MainContext';
 
 export default function Main() {
   const { isUserAuthenticated } = useAuth();

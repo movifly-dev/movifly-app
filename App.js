@@ -1,6 +1,6 @@
-import Main from "./Main";
+import Main from './Main';
 
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from './contexts/AuthContext';
 
 export default function App() {
   return (
