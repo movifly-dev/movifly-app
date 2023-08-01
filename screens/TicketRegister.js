@@ -1,73 +1,91 @@
 /* eslint-disable no-undef */
 import { SafeAreaView, ScrollView, View, Text, TextInput, Button } from 'react-native';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { encode } from 'base-64';
 
 function TicketRegisterView() {
   const [lastName, setLastName] = useState('');
-  const [bookingReference, setBookingReference] = useState('');
+  const [pnrCode, setPnrCode] = useState('');
   const [flightDetails, setFlightDetails] = useState(null);
-  const [amadeusAPIKey, setAmadeusAPIKey] = useState('');
+  const [accessToken, setAccessToken] = useState('');
 
   const handleGetAccessToken = async () => {
     try {
-      const clientId = 'FS4GaCt54aHQw1FU8RnBRJpwXHT0VEO0';
-      const clientSecret = 'h2flJH82Cajjr8tm';
-      const baseUrl = 'https://test.api.amadeus.com/v1';
+      const userId = 'VjE6Njl2MmNpOXEyazZzeTZ2dzpERVZDRU5URVI6RVhU';
+      const password = 'TEpKOWVwbTc=';
 
-      const formData = new URLSearchParams();
-      formData.append('grant_type', 'client_credentials');
-      formData.append('client_id', clientId);
-      formData.append('client_secret', clientSecret);
+      const authHeader = encode(`${userId}:${password}`);
+      const baseUrl = 'https://api.havail.sabre.com/v2/auth/token';
 
-      const response = await axios.post(`${baseUrl}/security/oauth2/token`, formData, {
+      const data = {
+        grant_type: 'client_credentials',
+      };
+
+      const config = {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${authHeader}`,
         },
-      });
-
-      setAmadeusAPIKey(response.data.access_token);
-      return response.data.access_token; // Return the access token
+      };
+      console.log('AUTHHEADER:', authHeader);
+      const response = await axios.post(baseUrl, new URLSearchParams(data).toString(), config);
+      console.log('RESPONSEE::', response.data);
+      console.log('RESPONSE', response.data.access_token);
+      setAccessToken(response.data.access_token);
+      return response.data.access_token;
     } catch (error) {
-      console.log('Error getting access token:', error.message);
+      console.error('Error getting access token:', error.message);
+      if (error.response) {
+        console.error('Response Data:', error.response.data);
+      }
       alert('Failed to retrieve the access token. Please check your credentials.');
     }
   };
 
+
+  useEffect(() => {
+    if (accessToken) {
+      handleLinkReservation();
+    }
+  }, [accessToken]);
+
+
   const handleLinkReservation = async () => {
     try {
-      if (!lastName || !bookingReference) {
+      if (!lastName || !pnrCode) {
         alert('Por favor, preencha todos os campos.');
         return;
       }
 
-      if (!amadeusAPIKey) {
+      if (!accessToken) {
         await handleGetAccessToken();
-        if (!amadeusAPIKey) {
-          // Access token not obtained, exit
+        if (!accessToken) {
+          alert('accessToken NONE', accessToken);
           return;
         }
       }
+      alert('accessToken', accessToken);
 
-      const baseUrl = 'https://test.api.amadeus.com/v1';
+      const baseUrl = 'api.cert.platform.sabre.com/v1/trip/orders';
 
-      const response = await axios.get(`${baseUrl}/shopping/flight-offers/pricing`, {
+      const response = await axios.get(`${baseUrl}/getBooking`, {
         headers: {
-          Authorization: `Bearer ${amadeusAPIKey}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         params: {
-          travelerLastName: lastName,
-          bookingReference: bookingReference,
+          surname: lastName,
+          confirmationId: pnrCode,
         },
       });
-
+      console.log('DATA PNR STATUS:', response.data);
       setFlightDetails(response.data);
     } catch (error) {
       alert('Erro ao buscar detalhes da reserva. Verifique suas informações.');
     }
   };
 
-
+  console.log('accessToken', accessToken);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -83,8 +101,8 @@ function TicketRegisterView() {
           <Text style={styles.label}>Código da Reserva ou ID da Viagem:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setBookingReference(text)}
-            value={bookingReference}
+            onChangeText={(text) => setPnrCode(text)}
+            value={pnrCode}
             placeholder="Digite o código da reserva ou ID da viagem"
           />
 
