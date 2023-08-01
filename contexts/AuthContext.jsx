@@ -4,7 +4,7 @@
 /* eslint-disable no-alert */
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
-import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+import { FIREBASE_AUTH } from '../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const AuthContext = createContext();

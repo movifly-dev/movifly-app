@@ -1,4 +1,3 @@
-// import {...} from "firebase/database";
 import { getFirestore } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';

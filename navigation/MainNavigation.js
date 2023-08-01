@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import * as React from 'react';
 import { Text, TouchableOpacity, useColorScheme } from 'react-native';
 
@@ -25,6 +27,7 @@ import TicketsListingView from '../screens/TicketListing';
 import ChecklistNextFlightsView from '../screens/ChecklistNextFlights';
 import ProfitCalculatorView from '../screens/ProfitCalculator';
 import InfoExportationView from '../screens/InfoExportation';
+import ClientDetails from '../screens/ClientDetails';
 
 // =================================================== MAIN STACK GROUP
 
@@ -37,6 +40,21 @@ function BaseStackGroup() {
         name="TabsGroup"
         component={ClientTabsGroup}
         options={{ headerShown: false }}
+      />
+      <MainStackGroup.Screen
+        name="ClientDetails"
+        component={ClientDetails}
+        options={({ navigation }) => ({
+          title: 'Detalhes do cliente',
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginRight: 15 }}
+              onPress={() => navigation && navigation.goBack()}
+            >
+              <Ionicons name="arrow-back-outline" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        })}
       />
       {/* <MainStackGroup.Screen
         name="Panic"
