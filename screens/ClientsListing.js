@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 function ClientsListingView() {
   const [clients, setClients] = useState([]);
-  const [numClientsToLoad, setNumClientsToLoad] = useState(15);
+  const [numClientsToLoad, setNumClientsToLoad] = useState(10);
   const navigation = useNavigation();
 
   const reviewLabels = {
@@ -42,7 +42,7 @@ function ClientsListingView() {
   };
 
   const handleLoadMore = () => {
-    setNumClientsToLoad((prevNumClientsToLoad) => prevNumClientsToLoad + 15);
+    setNumClientsToLoad((prevNumClientsToLoad) => prevNumClientsToLoad + 5);
   };
 
   return (

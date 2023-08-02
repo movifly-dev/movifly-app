@@ -7,7 +7,7 @@ function HomeView() {
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.homeView}></View>
-        <Text>fffff</Text>
+        {/* <Text>fffff</Text> */}
       </ScrollView>
     </SafeAreaView>
   );
