@@ -28,7 +28,6 @@ import ChecklistNextFlightsView from '../screens/ChecklistNextFlights';
 import ProfitCalculatorView from '../screens/ProfitCalculator';
 import InfoExportationView from '../screens/InfoExportation';
 import ClientDetails from '../screens/ClientDetails';
-import ClientDetailsEdit from '../screens/ClientDetailsEdit';
 
 // =================================================== MAIN STACK GROUP
 
