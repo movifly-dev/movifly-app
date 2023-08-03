@@ -243,7 +243,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
               placeholder="Digite o CPF"
             />
 
-            <Button title="Cadastrar" onPress={handleSubmit} disabled={!isFormCompleted || !nomeComprador} />
+            <Button title="Salvar" onPress={handleSubmit} disabled={!isFormCompleted || !nomeComprador} />
           </View>
         </ScrollView>
       </SafeAreaView>

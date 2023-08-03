@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { FIRESTORE_DB } from '../firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
+import { useMain } from '../contexts/MainContext';
 
 function ClientRegisterView() {
   const [dataVenda, setDataVenda] = useState('');
@@ -20,6 +21,7 @@ function ClientRegisterView() {
   const [emailCliente, setEmailCliente] = useState('');
   const [cpf, setCpf] = useState('');
   const [isFormCompleted, setIsFormCompleted] = useState(false);
+  const { fetchClients } = useMain();
 
   useEffect(() => {
     const requiredFields = [
@@ -55,7 +57,7 @@ function ClientRegisterView() {
     emailCliente,
     cpf,
   ]);
-  
+
   const handleSubmit = async () => {
     try {
       const newClientData = {
@@ -74,7 +76,6 @@ function ClientRegisterView() {
         emailCliente,
         cpf,
       };
-      console.log('newClientData', newClientData);
       // Define the collection reference
       const clientesCollectionRef = collection(FIRESTORE_DB, 'clientes');
 
@@ -82,6 +83,7 @@ function ClientRegisterView() {
       await addDoc(clientesCollectionRef, newClientData);
 
       alert('Data submitted successfully!');
+      fetchClients();
       setDataVenda('');
       setCompanhiaAerea('');
       setLocalizador('');
