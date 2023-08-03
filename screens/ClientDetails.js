@@ -1,18 +1,22 @@
 /* eslint-disable react/prop-types */
 import { collection, deleteDoc, doc } from 'firebase/firestore';
-import React from 'react';
-import { SafeAreaView, ScrollView, Text, View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { FIRESTORE_DB } from '../firebaseConfig';
 import { MaterialIcons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { useMain } from '../contexts/MainContext';
+import ClientDetailsEdit from './ClientDetailsEdit';
+import DeleteConfirmationModal from '../components/Clients/DeleteConfirmationModal';
 
 
 function ClientDetails({ route }) {
+  const { fetchClients, clients } = useMain();
   const { client } = route.params;
-  const { id, ...clientDetails } = client;
+  const { id, ...clientDetails } = clients.find(clientDetails => clientDetails.id === client.id);
   const navigation = useNavigation();
-
+  const [isModalEditVisible, setIsModalEditVisible] = useState(false);
+  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
 
   const parsedLabels = {
     dataVenda: 'Data da Venda',
@@ -31,8 +35,12 @@ function ClientDetails({ route }) {
     cpf: 'CPF',
   };
 
-  const handleClientEdit = async (clientId) => {
-    // operation edit here, calll component or use this same to edit and save.
+  const toggleModalEdit = () => {
+    setIsModalEditVisible((prev) => !prev);
+  };
+
+  const toggleModalDelete = () => {
+    setIsModalDeleteVisible((prev) => !prev);
   };
 
   const handleClientDelete = async (clientId) => {
@@ -41,8 +49,9 @@ function ClientDetails({ route }) {
       const clientesCollectionRef = collection(FIRESTORE_DB, 'clientes');
       const documentRef = doc(clientesCollectionRef, clientId);
       await deleteDoc(documentRef);
-
       navigation.goBack();
+      await fetchClients();
+      // toggleModalDelete();
 
       // Update the state to reflect the changes (remove the deleted client from the list)
       // setClients((prevClients) => prevClients.filter((client) => client.id !== clientId));
@@ -50,7 +59,7 @@ function ClientDetails({ route }) {
       // Show a success message to the user (you can use a Toast or an alert)
       // ...
     } catch (error) {
-      console.error('Error deleting client:', error);
+      throw new Error('Error deleting client:', error);
       // Show an error message to the user (you can use a Toast or an alert)
       // ...
     }
@@ -61,10 +70,10 @@ function ClientDetails({ route }) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.clientDetailsView}>
           <View style={styles.clientDetailsOperations}>
-            <TouchableOpacity onPress={() => handleClientEdit(id)}>
+            <TouchableOpacity onPress={toggleModalEdit} style={styles.touchableSpace}>
               <MaterialIcons name="edit" size={26} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleClientDelete(id)}>
+            <TouchableOpacity onPress={toggleModalDelete} style={styles.touchableSpace}>
               <MaterialIcons name="delete" size={26} color="black" />
             </TouchableOpacity>
           </View>
@@ -75,6 +84,20 @@ function ClientDetails({ route }) {
             </View>
           ))}
         </View>
+
+        {/* Modal for editing */}
+        <ClientDetailsEdit
+          isVisible={isModalEditVisible}
+          client={client}
+          closeModal={toggleModalEdit}
+        />
+
+        {/* Modal for confirm delete */}
+        <DeleteConfirmationModal
+          isVisible={isModalDeleteVisible}
+          onCancel={toggleModalDelete}
+          onConfirm={() => handleClientDelete(id)}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -86,6 +109,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  touchableSpace: {
+    backgroundColor: 'rgba(200, 200, 200, 0.3)',
+    padding: 8,
+    borderRadius: 50,
   },
   clientDetailsView: {
     flex: 1,

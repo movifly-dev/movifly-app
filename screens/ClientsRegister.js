@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, View, Text, TextInput, Button } from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { FIRESTORE_DB } from '../firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
 
@@ -55,7 +55,7 @@ function ClientRegisterView() {
     emailCliente,
     cpf,
   ]);
-
+  
   const handleSubmit = async () => {
     try {
       const newClientData = {
@@ -102,6 +102,9 @@ function ClientRegisterView() {
     }
   };
 
+  // useEffect(() => {
+
+  // }, [valorVenda, valorCompra]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -181,10 +184,10 @@ function ClientRegisterView() {
 
           <Text style={styles.label}>Lucro:</Text>
           <TextInput
-            style={styles.input}
-            onChangeText={setLucro}
+            style={StyleSheet.compose(styles.input, styles.disabled)}
             value={lucro}
-            placeholder="Digite o valor do lucro"
+            placeholder="Preencha o valor da venda e da compra"
+            editable={false}
           />
 
           <Text style={styles.label}>Forma de Pagamento:</Text>
@@ -246,4 +249,7 @@ const styles = {
     paddingHorizontal: 10,
     marginBottom: 20,
   },
+  disabled: {
+    backgroundColor: '#f2f2f2',
+  }
 };

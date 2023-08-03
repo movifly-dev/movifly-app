@@ -28,6 +28,7 @@ import ChecklistNextFlightsView from '../screens/ChecklistNextFlights';
 import ProfitCalculatorView from '../screens/ProfitCalculator';
 import InfoExportationView from '../screens/InfoExportation';
 import ClientDetails from '../screens/ClientDetails';
+import ClientDetailsEdit from '../screens/ClientDetailsEdit';
 
 // =================================================== MAIN STACK GROUP
 
@@ -56,6 +57,10 @@ function BaseStackGroup() {
           ),
         })}
       />
+      {/* <MainStackGroup.Screen
+        name="EditForm"
+        component={ClientDetailsEdit}
+      /> */}
       {/* <MainStackGroup.Screen
         name="Panic"
         component={ClientPanicView}

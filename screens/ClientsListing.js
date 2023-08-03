@@ -1,15 +1,18 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { collection, getDocs } from 'firebase/firestore';
-import { FIRESTORE_DB } from '../firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
+import { useMain } from '../contexts/MainContext';
 
 function ClientsListingView() {
-  const [clients, setClients] = useState([]);
   const [numClientsToLoad, setNumClientsToLoad] = useState(10);
   const navigation = useNavigation();
+  const { clients, fetchClients } = useMain();
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
 
   const reviewLabels = {
     dataVenda: 'Data da Venda',
@@ -26,19 +29,6 @@ function ClientsListingView() {
     checklistPago: 'Checklist Pago',
     emailCliente: 'E-mail do Cliente',
     cpf: 'CPF',
-  };
-
-  useEffect(() => {
-    fetchClients();
-  }, []);
-
-  const fetchClients = async () => {
-    const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'clientes'));
-    const clientsData = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setClients(clientsData);
   };
 
   const handleLoadMore = () => {
@@ -59,7 +49,7 @@ function ClientsListingView() {
         }}
       >
         <View style={styles.clientsListingView}>
-          {clients.slice(0, numClientsToLoad).map((client) => (
+          {clients?.slice(0, numClientsToLoad).map((client) => (
             <TouchableOpacity
               key={client.id}
               style={styles.clientItem}
