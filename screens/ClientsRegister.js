@@ -1,9 +1,13 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import Checkbox from 'expo-checkbox';
 import { FIRESTORE_DB } from '../firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
 import { useMain } from '../contexts/MainContext';
+import { TextInputMask } from 'react-native-masked-text';
+import { Picker } from '@react-native-picker/picker';
+const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
 function ClientRegisterView() {
   const [dataVenda, setDataVenda] = useState('');
@@ -17,11 +21,12 @@ function ClientRegisterView() {
   const [valorVenda, setValorVenda] = useState('');
   const [lucro, setLucro] = useState('');
   const [formaPagamento, setFormaPagamento] = useState('');
-  const [checklistPago, setChecklistPago] = useState('');
   const [emailCliente, setEmailCliente] = useState('');
   const [cpf, setCpf] = useState('');
   const [isFormCompleted, setIsFormCompleted] = useState(false);
   const { fetchClients } = useMain();
+  const [checklistPagoChecked, setChecklistPagoChecked] = useState(false);
+  const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
 
   useEffect(() => {
     const requiredFields = [
@@ -36,11 +41,29 @@ function ClientRegisterView() {
       valorVenda,
       lucro,
       formaPagamento,
-      checklistPago,
       emailCliente,
       cpf,
     ];
-    setIsFormCompleted(requiredFields.some((field) => field.trim() !== ''));
+    const isFormCompleted = requiredFields.some((field) => field.trim() !== '') || checklistPagoChecked;
+    const newClientData = {
+      dataVenda,
+      companhiaAerea,
+      localizador,
+      nomePassageiro,
+      nomeComprador,
+      nomeVendedor,
+      contatoVendedor,
+      valorCompra,
+      valorVenda,
+      lucro,
+      formaPagamento,
+      checklistPagoChecked: checklistPagoChecked ? 'sim' : 'Não' ,
+      checklistReembolsado,
+      emailCliente,
+      cpf,
+    };
+    console.log('newClientData', newClientData);
+    setIsFormCompleted(isFormCompleted);
   }, [
     dataVenda,
     companhiaAerea,
@@ -53,7 +76,7 @@ function ClientRegisterView() {
     valorVenda,
     lucro,
     formaPagamento,
-    checklistPago,
+    checklistPagoChecked,
     emailCliente,
     cpf,
   ]);
@@ -72,7 +95,8 @@ function ClientRegisterView() {
         valorVenda,
         lucro,
         formaPagamento,
-        checklistPago,
+        checklistPagoChecked: checklistPagoChecked ? 'sim' : 'Não' ,
+        checklistReembolsado,
         emailCliente,
         cpf,
       };
@@ -95,7 +119,8 @@ function ClientRegisterView() {
       setValorVenda('');
       setLucro('');
       setFormaPagamento('');
-      setChecklistPago('');
+      setChecklistPagoChecked(false);
+      setChecklistReembolsado('nao_solicitado');
       setEmailCliente('');
       setCpf('');
     } catch (error) {
@@ -111,12 +136,17 @@ function ClientRegisterView() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.clientRegisterView}>
+        <View style={styles.clientRegisterViewStyle}>
           <Text style={styles.label}>Data da Venda:</Text>
-          <TextInput
+          {/* Use the TextInputMask component for the dataVenda input */}
+          <TextInputMask
             style={styles.input}
-            onChangeText={setDataVenda}
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY',
+            }}
             value={dataVenda}
+            onChangeText={setDataVenda}
             placeholder="Digite a data da venda"
           />
 
@@ -161,10 +191,17 @@ function ClientRegisterView() {
           />
 
           <Text style={styles.label}>Contato do Vendedor:</Text>
-          <TextInput
+          {/* Use the TextInputMask component for the contatoVendedor input */}
+          <TextInputMask
             style={styles.input}
-            onChangeText={setContatoVendedor}
+            type={'cel-phone'}
+            options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '(99) ',
+            }}
             value={contatoVendedor}
+            onChangeText={setContatoVendedor}
             placeholder="Digite o contato do vendedor"
           />
 
@@ -201,12 +238,27 @@ function ClientRegisterView() {
           />
 
           <Text style={styles.label}>Checklist Pago:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setChecklistPago}
-            value={checklistPago}
-            placeholder="Digite se o checklist foi pago"
-          />
+          {/* Use the CheckBox component */}
+          <View style={styles.checkboxContainer}>
+            <Checkbox
+              value={checklistPagoChecked}
+              onValueChange={(newValue) => setChecklistPagoChecked(newValue)}
+            />
+            <Text style={styles.checkboxLabel}>Sim</Text>
+          </View>
+
+          <Text style={styles.label}>Reembolsado:</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={checklistReembolsado}
+              onValueChange={(itemValue) => setChecklistReembolsado(itemValue)}
+              style={styles.picker}
+            >
+              {checklistOptions.map((option) => (
+                <Picker.Item key={option} label={option} value={option} />
+              ))}
+            </Picker>
+          </View>
 
           <Text style={styles.label}>E-mail do Cliente:</Text>
           <TextInput
@@ -217,14 +269,16 @@ function ClientRegisterView() {
           />
 
           <Text style={styles.label}>CPF:</Text>
-          <TextInput
+          {/* Use the TextInputMask component for the cpf input */}
+          <TextInputMask
             style={styles.input}
-            onChangeText={setCpf}
+            type={'cpf'}
             value={cpf}
+            onChangeText={setCpf}
             placeholder="Digite o CPF"
           />
 
-          <Button title="Cadastrar" onPress={handleSubmit} disabled={!isFormCompleted || !nomeComprador} />
+          <Button title="Cadastrar" onPress={handleSubmit} disabled={!isFormCompleted} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -234,7 +288,7 @@ function ClientRegisterView() {
 export default ClientRegisterView;
 
 const styles = {
-  clientRegisterView: {
+  clientRegisterViewStyle: {
     flex: 1,
     padding: 20,
   },
@@ -253,5 +307,24 @@ const styles = {
   },
   disabled: {
     backgroundColor: '#f2f2f2',
-  }
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkboxLabel: {
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  picker: {
+    width: '100%',
+    paddingHorizontal: 10,
+  },
 };

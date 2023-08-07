@@ -15,12 +15,37 @@ function ExcelExportView() {
     }
 
     const csvHeader = [
-      'DataVenda', 'CompanhiaAerea', 'Localizador', 'NomePassageiro', 'NomeComprador', 'NomeVendedor', 'ContatoVendedor', 'ValorCompra', 'ValorVenda', 'Lucro', 'FormaPagamento', 'ChecklistPago', 'EmailCliente', 'CPF'
+      'DataVenda',
+      'CompanhiaAerea',
+      'Localizador',
+      'NomePassageiro',
+      'NomeComprador',
+      'NomeVendedor',
+      'ContatoVendedor',
+      'ValorCompra',
+      'ValorVenda',
+      'Lucro',
+      'FormaPagamento',
+      'ChecklistPago',
+      'EmailCliente',
+      'CPF'
     ];
 
     const csvData = clients.map(client => [
-      client.dataVenda, client.companhiaAerea, client.localizador, client.nomePassageiro,
-      client.nomeComprador, client.nomeVendedor, client.contatoVendedor, client.valorCompra, client.valorVenda, client.lucro, client.formaPagamento, client.checklistPago, client.emailCliente, client.cpf
+      client.dataVenda,
+      client.companhiaAerea,
+      client.localizador,
+      client.nomePassageiro,
+      client.nomeComprador,
+      client.nomeVendedor,
+      client.contatoVendedor,
+      client.valorCompra,
+      client.valorVenda,
+      client.lucro,
+      client.formaPagamento,
+      client.checklistPago,
+      client.emailCliente,
+      client.cpf
     ]);
     const data = [csvHeader, ...csvData];
     const ws = XLSX.utils.aoa_to_sheet(data);
