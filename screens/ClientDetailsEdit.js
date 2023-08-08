@@ -6,7 +6,9 @@ import { FIRESTORE_DB } from '../firebaseConfig';
 import { updateDoc, collection, doc } from 'firebase/firestore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useMain } from '../contexts/MainContext';
-
+import Checkbox from 'expo-checkbox';
+import { Picker } from '@react-native-picker/picker';
+import { TextInputMask } from 'react-native-masked-text';
 
 function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const [dataVenda, setDataVenda] = useState(client.dataVenda);
@@ -20,28 +22,44 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const [valorVenda, setValorVenda] = useState(client.valorVenda);
   const [lucro, setLucro] = useState(client.lucro);
   const [formaPagamento, setFormaPagamento] = useState(client.formaPagamento);
-  const [checklistPago, setChecklistPago] = useState(client.checklistPago);
+  const [checklistPagoChecked, setChecklistPagoChecked] = useState(client.checklistPagoChecked);
   const [emailCliente, setEmailCliente] = useState(client.emailCliente);
   const [cpf, setCpf] = useState(client.cpf);
   const [isFormCompleted, setIsFormCompleted] = useState(false);
   const { fetchClients } = useMain();
+  const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
+  const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
-  console.log('MAMAFDP:', {
-    dataVenda,
-    companhiaAerea,
-    localizador,
-    nomePassageiro,
-    nomeComprador,
-    nomeVendedor,
-    contatoVendedor,
-    valorCompra,
-    valorVenda,
-    lucro,
-    formaPagamento,
-    checklistPago,
-    emailCliente,
-    cpf,
-  });
+  // Helper function to convert a BRL currency string to a number
+  const parseCurrencyValue = (currencyString) => {
+    if (!currencyString) return 0;
+
+    const parsedValue = currencyString
+      .replace('R$', '')
+      .replace(/\./g, '')
+      .replace(/,/g, '.')
+      .trim();
+
+    return parseFloat(parsedValue) || 0;
+  };
+
+  // Helper function to convert a number to BRL currency format
+  const formatCurrencyValue = (value) => {
+    return `R$ ${value.replace('.', ',')}`;
+  };
+
+  // Function to calculate the profit based on the given "Valor da Compra" and "Valor da Venda"
+  const calculateProfit = (valorCompra, valorVenda) => {
+    const valorCompraNumber = parseCurrencyValue(valorCompra);
+    const valorVendaNumber = parseCurrencyValue(valorVenda);
+
+    if (isNaN(valorCompraNumber) || isNaN(valorVendaNumber)) {
+      return 0;
+    }
+
+    return (valorVendaNumber - valorCompraNumber).toFixed(2);
+  };
+
   useEffect(() => {
     const requiredFields = [
       dataVenda,
@@ -55,17 +73,11 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
       valorVenda,
       lucro,
       formaPagamento,
-      checklistPago,
+      checklistPagoChecked,
       emailCliente,
       cpf,
     ];
     setIsFormCompleted(requiredFields.some((field) => field.trim() !== ''));
-
-    if (valorCompra && valorVenda) {
-      setLucro(`${Number(valorVenda) - Number(valorCompra)}`);
-    } else {
-      setLucro('00,00');
-    }
   }, [
     dataVenda,
     companhiaAerea,
@@ -78,10 +90,20 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
     valorVenda,
     lucro,
     formaPagamento,
-    checklistPago,
+    checklistPagoChecked,
     emailCliente,
     cpf,
   ]);
+
+  useEffect(() => {
+    if (valorCompra && valorVenda) {
+      const valorLucro = calculateProfit(valorCompra, valorVenda);
+      const formattedLucro = formatCurrencyValue(valorLucro); // Format the currency value
+      setLucro(formattedLucro);
+    } else {
+      setLucro('');
+    }
+  }, [valorCompra, valorVenda]);
 
   const handleSubmit = async () => {
     try {
@@ -97,7 +119,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
         valorVenda,
         lucro,
         formaPagamento,
-        checklistPago,
+        checklistPagoChecked: checklistPagoChecked ? 'sim' : 'Não' ,
         emailCliente,
         cpf,
       };
@@ -117,10 +139,6 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
     }
   };
 
-  // useEffect(() => {
-
-  // }, [valorVenda, valorCompra]);
-
   return (
     <Modal visible={isVisible} animationType="slide" onRequestClose={closeModal}>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -132,10 +150,14 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
           </View>
           <View style={styles.clientRegisterView}>
             <Text style={styles.label}>Data da Venda:</Text>
-            <TextInput
+            <TextInputMask
               style={styles.input}
-              onChangeText={setDataVenda}
+              type={'datetime'}
+              options={{
+                format: 'DD/MM/YYYY',
+              }}
               value={dataVenda}
+              onChangeText={setDataVenda}
               placeholder="Digite a data da venda"
             />
 
@@ -180,33 +202,47 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             />
 
             <Text style={styles.label}>Contato do Vendedor:</Text>
-            <TextInput
+            {/* Use the TextInputMask component for the contatoVendedor input */}
+            <TextInputMask
               style={styles.input}
-              onChangeText={setContatoVendedor}
+              type={'cel-phone'}
+              options={{
+                maskType: 'BRL',
+                withDDD: true,
+                dddMask: '(99) ',
+              }}
               value={contatoVendedor}
+              onChangeText={setContatoVendedor}
               placeholder="Digite o contato do vendedor"
             />
 
             <Text style={styles.label}>Valor da Compra:</Text>
-            <TextInput
+            {/* Use the TextInputMask component for the valorCompra input */}
+            <TextInputMask
               style={styles.input}
-              onChangeText={setValorCompra}
+              type={'money'}
               value={valorCompra}
+              onChangeText={setValorCompra}
               placeholder="Digite o valor da compra"
             />
 
             <Text style={styles.label}>Valor da Venda:</Text>
-            <TextInput
+            {/* Use the TextInputMask component for the valorVenda input */}
+            <TextInputMask
               style={styles.input}
-              onChangeText={setValorVenda}
+              type={'money'}
               value={valorVenda}
+              onChangeText={setValorVenda}
               placeholder="Digite o valor da venda"
             />
 
             <Text style={styles.label}>Lucro:</Text>
-            <TextInput
+            {/* Use the TextInputMask component for the lucro input */}
+            <TextInputMask
               style={StyleSheet.compose(styles.input, styles.disabled)}
-              value={lucro === 'NaN' ? 'Valor da compra ou venda não é número' : lucro}
+              value={lucro}
+              type={'money'}
+              onChangeText={setLucro}
               placeholder="Preencha o valor da venda e da compra"
               editable={false}
             />
@@ -220,12 +256,27 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             />
 
             <Text style={styles.label}>Checklist Pago:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setChecklistPago}
-              value={checklistPago}
-              placeholder="Digite se o checklist foi pago"
-            />
+            {/* Use the CheckBox component */}
+            <View style={styles.checkboxContainer}>
+              <Checkbox
+                value={checklistPagoChecked}
+                onValueChange={setChecklistPagoChecked}
+              />
+              <Text style={styles.checkboxLabel}>Sim</Text>
+            </View>
+
+            <Text style={styles.label}>Reembolsado:</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={checklistReembolsado}
+                onValueChange={setChecklistReembolsado}
+                style={styles.picker}
+              >
+                {checklistOptions.map((option) => (
+                  <Picker.Item key={option} label={option} value={option} />
+                ))}
+              </Picker>
+            </View>
 
             <Text style={styles.label}>E-mail do Cliente:</Text>
             <TextInput
@@ -236,10 +287,11 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             />
 
             <Text style={styles.label}>CPF:</Text>
-            <TextInput
+            <TextInputMask
               style={styles.input}
-              onChangeText={setCpf}
+              type={'cpf'}
               value={cpf}
+              onChangeText={setCpf}
               placeholder="Digite o CPF"
             />
 
@@ -273,6 +325,25 @@ const styles = {
   },
   disabled: {
     backgroundColor: 'rgba(200,200,200,0.2)',
-    color: 'rgba(0,0,0,0.6)'
-  }
+    color: 'rgba(0,0,0,0.6)',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkboxLabel: {
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  picker: {
+    width: '100%',
+    paddingHorizontal: 10,
+  },
 };

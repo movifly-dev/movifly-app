@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, Text, View, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { TextInputMask } from 'react-native-masked-text';
 
 function ProfitCalculatorView() {
   const [valorCompra, setValorCompra] = useState('');
@@ -8,15 +9,37 @@ function ProfitCalculatorView() {
   const [profit, setProfit] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const parseCurrencyValue = (currencyString) => {
+    if (!currencyString) return 0;
+
+    const parsedValue = currencyString
+      .replace('R$', '')
+      .replace(/\./g, '')
+      .replace(/,/g, '.')
+      .trim();
+
+    return parseFloat(parsedValue) || 0;
+  };
+
+  const formatCurrencyValue = (value) => {
+    const formattedValue = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(Math.abs(value));
+
+    return formattedValue;
+  };
+
+  // Function to calculate the profit based on the given values
   const calculateProfit = () => {
     if (!valorCompra || !valorVenda) {
       setModalVisible(true);
       return;
     }
 
-    const compra = parseFloat(valorCompra);
-    const venda = parseFloat(valorVenda);
-    const descontos = descontosTaxas ? parseFloat(descontosTaxas) : 0;
+    const compra = parseCurrencyValue(valorCompra);
+    const venda = parseCurrencyValue(valorVenda);
+    const descontos = descontosTaxas ? parseCurrencyValue(descontosTaxas) : 0;
 
     const calculatedProfit = venda - compra - descontos;
     setProfit(calculatedProfit);
@@ -27,7 +50,8 @@ function ProfitCalculatorView() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.profitCalculatorView}>
           <Text style={styles.label}>Valor da Compra:</Text>
-          <TextInput
+          <TextInputMask
+            type={'money'}
             style={styles.input}
             onChangeText={(value) => setValorCompra(value)}
             value={valorCompra}
@@ -36,7 +60,8 @@ function ProfitCalculatorView() {
           />
 
           <Text style={styles.label}>Valor da Venda:</Text>
-          <TextInput
+          <TextInputMask
+            type={'money'}
             style={styles.input}
             onChangeText={(value) => setValorVenda(value)}
             value={valorVenda}
@@ -45,11 +70,11 @@ function ProfitCalculatorView() {
           />
 
           <Text style={styles.label}>Descontos/Taxas:</Text>
-          <TextInput
+          <TextInputMask
             style={styles.input}
-            onChangeText={(value) => setDescontosTaxas(value)}
+            type={'money'}
             value={descontosTaxas}
-            keyboardType="numeric"
+            onChangeText={setDescontosTaxas}
             placeholder="Digite o valor dos descontos/taxas (opcional)"
           />
 
@@ -60,10 +85,10 @@ function ProfitCalculatorView() {
           {profit !== null && (
             <View style={styles.profitResult}>
               <Text style={styles.profitResultLabel}>Lucro:</Text>
-              <Text style={styles.profitResultValue}>{profit >= 0 ? profit.toFixed(2) : '0.00'}</Text>
+              <Text style={styles.profitResultValue}>{profit > 0 ? formatCurrencyValue(profit) : '0.00'}</Text>
 
               <Text style={styles.profitResultLabel}>Prejuízo:</Text>
-              <Text style={styles.profitResultValue}>{profit < 0 ? (profit * -1).toFixed(2) : '0.00'}</Text>
+              <Text style={styles.profitResultValue}>{profit < 0 ? formatCurrencyValue((profit * -1)) : '0.00'}</Text>
             </View>
           )}
 

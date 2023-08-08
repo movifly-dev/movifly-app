@@ -27,6 +27,7 @@ function ExcelExportView() {
       'Lucro',
       'FormaPagamento',
       'ChecklistPago',
+      'ChecklistReembolsado',
       'EmailCliente',
       'CPF'
     ];
@@ -43,7 +44,8 @@ function ExcelExportView() {
       client.valorVenda,
       client.lucro,
       client.formaPagamento,
-      client.checklistPago,
+      client.checklistPagoChecked,
+      client.checklistReembolsado,
       client.emailCliente,
       client.cpf
     ]);

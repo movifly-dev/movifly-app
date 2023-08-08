@@ -7,7 +7,6 @@ import { addDoc, collection } from 'firebase/firestore';
 import { useMain } from '../contexts/MainContext';
 import { TextInputMask } from 'react-native-masked-text';
 import { Picker } from '@react-native-picker/picker';
-const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
 function ClientRegisterView() {
   const [dataVenda, setDataVenda] = useState('');
@@ -23,10 +22,11 @@ function ClientRegisterView() {
   const [formaPagamento, setFormaPagamento] = useState('');
   const [emailCliente, setEmailCliente] = useState('');
   const [cpf, setCpf] = useState('');
-  const [isFormCompleted, setIsFormCompleted] = useState(false);
-  const { fetchClients } = useMain();
   const [checklistPagoChecked, setChecklistPagoChecked] = useState(false);
   const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
+  const [isFormCompleted, setIsFormCompleted] = useState(false);
+  const { fetchClients } = useMain();
+  const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
   useEffect(() => {
     const requiredFields = [
@@ -129,9 +129,46 @@ function ClientRegisterView() {
     }
   };
 
-  // useEffect(() => {
+  // Helper function to convert a BRL currency string to a number
+  const parseCurrencyValue = (currencyString) => {
+    if (!currencyString) return 0;
 
-  // }, [valorVenda, valorCompra]);
+    const parsedValue = currencyString
+      .replace('R$', '')
+      .replace(/\./g, '')
+      .replace(/,/g, '.')
+      .trim();
+
+    return parseFloat(parsedValue) || 0;
+  };
+
+  // Helper function to convert a number to BRL currency format
+  const formatCurrencyValue = (value) => {
+    return `R$ ${value.replace('.', ',')}`;
+  };
+
+  // Function to calculate the profit based on the given "Valor da Compra" and "Valor da Venda"
+  const calculateProfit = (valorCompra, valorVenda) => {
+    const valorCompraNumber = parseCurrencyValue(valorCompra);
+    const valorVendaNumber = parseCurrencyValue(valorVenda);
+
+    if (isNaN(valorCompraNumber) || isNaN(valorVendaNumber)) {
+      return 0;
+    }
+
+    return (valorVendaNumber - valorCompraNumber).toFixed(2);
+  };
+
+  // Calculate profit whenever "Valor da Compra" or "Valor da Venda" changes
+  useEffect(() => {
+    if (valorCompra && valorVenda) {
+      const valorLucro = calculateProfit(valorCompra, valorVenda);
+      const formattedLucro = formatCurrencyValue(valorLucro); // Format the currency value
+      setLucro(formattedLucro);
+    } else {
+      setLucro('');
+    }
+  }, [valorCompra, valorVenda]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -206,25 +243,29 @@ function ClientRegisterView() {
           />
 
           <Text style={styles.label}>Valor da Compra:</Text>
-          <TextInput
+          <TextInputMask
             style={styles.input}
-            onChangeText={setValorCompra}
+            type={'money'}
             value={valorCompra}
+            onChangeText={setValorCompra}
             placeholder="Digite o valor da compra"
           />
 
           <Text style={styles.label}>Valor da Venda:</Text>
-          <TextInput
+          <TextInputMask
             style={styles.input}
-            onChangeText={setValorVenda}
+            type={'money'}
             value={valorVenda}
+            onChangeText={setValorVenda}
             placeholder="Digite o valor da venda"
           />
 
           <Text style={styles.label}>Lucro:</Text>
-          <TextInput
+          <TextInputMask
             style={StyleSheet.compose(styles.input, styles.disabled)}
             value={lucro}
+            type={'money'}
+            onChangeText={setLucro}
             placeholder="Preencha o valor da venda e da compra"
             editable={false}
           />

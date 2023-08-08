@@ -30,7 +30,8 @@ function ClientDetails({ route }) {
     valorVenda: 'Valor da Venda',
     lucro: 'Lucro',
     formaPagamento: 'Forma de Pagamento',
-    checklistPago: 'Checklist Pago',
+    checklistPagoChecked: 'Checklist Pago',
+    checklistReembolsado: 'Checklist Reembolado',
     emailCliente: 'E-mail do Cliente',
     cpf: 'CPF',
   };
@@ -51,10 +52,6 @@ function ClientDetails({ route }) {
       await deleteDoc(documentRef);
       navigation.goBack();
       await fetchClients();
-      // toggleModalDelete();
-
-      // Update the state to reflect the changes (remove the deleted client from the list)
-      // setClients((prevClients) => prevClients.filter((client) => client.id !== clientId));
 
       // Show a success message to the user (you can use a Toast or an alert)
       // ...

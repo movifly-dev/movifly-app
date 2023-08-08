@@ -26,7 +26,8 @@ function ClientsListingView() {
     valorVenda: 'Valor da Venda',
     lucro: 'Lucro',
     formaPagamento: 'Forma de Pagamento',
-    checklistPago: 'Checklist Pago',
+    checklistPagoChecked: 'Checklist Pago',
+    checklistReembolsado: 'Checklist Reembolado',
     emailCliente: 'E-mail do Cliente',
     cpf: 'CPF',
   };
