@@ -45,23 +45,6 @@ function ClientRegisterView() {
       cpf,
     ];
     const isFormCompleted = requiredFields.some((field) => field.trim() !== '') || checklistPagoChecked;
-    const newClientData = {
-      dataVenda,
-      companhiaAerea,
-      localizador,
-      nomePassageiro,
-      nomeComprador,
-      nomeVendedor,
-      contatoVendedor,
-      valorCompra,
-      valorVenda,
-      lucro,
-      formaPagamento,
-      checklistPagoChecked: checklistPagoChecked ? 'sim' : 'Não' ,
-      checklistReembolsado,
-      emailCliente,
-      cpf,
-    };
     setIsFormCompleted(isFormCompleted);
   }, [
     dataVenda,
