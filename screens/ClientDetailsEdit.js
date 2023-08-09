@@ -45,7 +45,11 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
 
   // Helper function to convert a number to BRL currency format
   const formatCurrencyValue = (value) => {
-    return `R$ ${value.replace('.', ',')}`;
+    const formatoBrasileiro = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+    return formatoBrasileiro.format(value);
   };
 
   // Function to calculate the profit based on the given "Valor da Compra" and "Valor da Venda"
@@ -238,10 +242,9 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
 
             <Text style={styles.label}>Lucro:</Text>
             {/* Use the TextInputMask component for the lucro input */}
-            <TextInputMask
+            <TextInput
               style={StyleSheet.compose(styles.input, styles.disabled)}
               value={lucro}
-              type={'money'}
               onChangeText={setLucro}
               placeholder="Preencha o valor da venda e da compra"
               editable={false}
