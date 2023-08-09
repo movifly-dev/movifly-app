@@ -10,7 +10,7 @@ import { useAuth } from './contexts/AuthContext';
 import { MainProvider } from './contexts/MainContext';
 
 export default function Main() {
-  const { isUserAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   // if (
   //   isClient === null ||
@@ -22,7 +22,7 @@ export default function Main() {
 
   return (
     <>
-      {!isUserAuthenticated ? (
+      {!user ? (
         <AuthNavigation />
       ) : (
         <MainProvider>

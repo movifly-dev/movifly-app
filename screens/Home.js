@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 function HomeView() {
   // ================================================================

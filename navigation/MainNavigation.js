@@ -12,9 +12,10 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { DrawerContentScrollView, createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 
 import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
 // [IMPORT] =========== CLIENT SCREENS
@@ -28,6 +29,7 @@ import ChecklistNextFlightsView from '../screens/ChecklistNextFlights';
 import ProfitCalculatorView from '../screens/ProfitCalculator';
 import InfoExportationView from '../screens/InfoExportation';
 import ClientDetails from '../screens/ClientDetails';
+import { useAuth } from '../contexts/AuthContext';
 
 // =================================================== MAIN STACK GROUP
 
@@ -281,9 +283,40 @@ function ToolsTopTabs() {
 
 const Drawer = createDrawerNavigator();
 
-function DrawerClient() {
+function LogoutButton({ onPress }) {
   return (
-    <Drawer.Navigator>
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 25,
+        marginLeft: 20,
+      }}
+    >
+      <AntDesign name="logout" size={24} color="black" />
+      <Text style={{ marginLeft: 12, fontWeight: '600' }}>Sair</Text>
+    </TouchableOpacity>
+  );
+}
+
+function DrawerClient() {
+  const { logoutUser } = useAuth();
+
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => (
+        <DrawerContentScrollView {...props}>
+          {/* Your existing drawer items */}
+          <DrawerItemList {...props} />
+          <LogoutButton
+            onPress={() => {
+              logoutUser();
+              props.navigation.closeDrawer();
+            }}
+          />
+        </DrawerContentScrollView>
+      )}>
       <Drawer.Screen
         name="Home"
         component={BaseStackGroup}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { Stack, TextInput, IconButton, Box, Button } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { useAuth } from '../../contexts/AuthContext';
 
 function LoginView() {
@@ -21,8 +22,11 @@ function LoginView() {
     try {
       setLoading(true);
       await loginUser(username, password);
+
+      // Store the username in AsyncStorage upon successful login
+      AsyncStorage.setItem('storedUsername', username);
     } catch (error) {
-      throw new Error('Erro ao logar::', error);
+      throw new Error('Erro ao logar:', error);
     } finally {
       setLoading(false);
     }
