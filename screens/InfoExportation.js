@@ -62,7 +62,6 @@ function ExcelExportView() {
 
     try {
       await FileSystem.writeAsStringAsync(fileUri, wbout, { encoding: FileSystem.EncodingType.Base64 });
-      console.log('Excel file created:', fileUri);
 
       // Now you have the Excel file at 'fileUri', you can use it as needed.
       // For example, you can share the file using the 'expo-sharing' package or trigger a download.

@@ -28,10 +28,7 @@ function TicketRegisterView() {
           Authorization: `Basic ${authHeader}`,
         },
       };
-      console.log('AUTHHEADER:', authHeader);
       const response = await axios.post(baseUrl, new URLSearchParams(data).toString(), config);
-      console.log('RESPONSEE::', response.data);
-      console.log('RESPONSE', response.data.access_token);
       setAccessToken(response.data.access_token);
       return response.data.access_token;
     } catch (error) {
@@ -78,14 +75,12 @@ function TicketRegisterView() {
           confirmationId: pnrCode,
         },
       });
-      console.log('DATA PNR STATUS:', response.data);
       setFlightDetails(response.data);
     } catch (error) {
       alert('Erro ao buscar detalhes da reserva. Verifique suas informações.');
     }
   };
 
-  console.log('accessToken', accessToken);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>

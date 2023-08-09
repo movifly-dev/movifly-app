@@ -49,7 +49,6 @@ function AuthProvider({ children }) {
       if (response) {
         setIsUserAuthenticated(true);
       }
-      console.log('response', response);
     } catch (error) {
       throw new Error('Erro ao logar: ' + error.message);
     }
@@ -63,7 +62,6 @@ function AuthProvider({ children }) {
         setIsUserAuthenticated(false);
         AsyncStorage.removeItem('userData'); // Clear user data on logout
       }
-      console.log('response', response);
     } catch (error) {
       throw new Error('Erro ao fazer logout: ' + error.message);
     }

@@ -62,7 +62,6 @@ function ClientRegisterView() {
       emailCliente,
       cpf,
     };
-    console.log('newClientData', newClientData);
     setIsFormCompleted(isFormCompleted);
   }, [
     dataVenda,
