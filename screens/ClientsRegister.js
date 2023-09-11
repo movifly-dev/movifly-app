@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import Checkbox from 'expo-checkbox';
 import { FIRESTORE_DB } from '../firebaseConfig';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useMain } from '../contexts/MainContext';
@@ -23,7 +22,7 @@ function ClientRegisterView() {
   const [formaPagamento, setFormaPagamento] = useState('');
   const [emailCliente, setEmailCliente] = useState('');
   const [cpf, setCpf] = useState('');
-  const [checklistPagoChecked, setChecklistPagoChecked] = useState(false);
+  const [checklistPagoChecked, setChecklistPagoChecked] = useState('Não');
   const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
   const [isFormCompleted, setIsFormCompleted] = useState(false);
   const { fetchClients } = useMain();
@@ -81,7 +80,7 @@ function ClientRegisterView() {
         valorVenda,
         lucro,
         formaPagamento,
-        checklistPagoChecked: checklistPagoChecked ? 'sim' : 'Não' ,
+        checklistPagoChecked,
         checklistReembolsado,
         emailCliente,
         cpf,
@@ -107,7 +106,7 @@ function ClientRegisterView() {
       setValorVenda('');
       setLucro('');
       setFormaPagamento('');
-      setChecklistPagoChecked(false);
+      setChecklistPagoChecked('');
       setChecklistReembolsado('nao_solicitado');
       setEmailCliente('');
       setCpf('');
@@ -273,21 +272,29 @@ function ClientRegisterView() {
           />
 
           <Text style={styles.label}>Forma de Pagamento:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setFormaPagamento}
-            value={formaPagamento}
-            placeholder="Digite a forma de pagamento"
-          />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={formaPagamento}
+              onValueChange={(itemValue) => setFormaPagamento(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Boleto" value="Boleto" />
+              <Picker.Item label="Pix" value="Pix" />
+              <Picker.Item label="Transferência Bancária" value="Transferência Bancária" />
+              <Picker.Item label="Cartão de crédito" value="Cartão de crédito" />
+            </Picker>
+          </View>
 
           <Text style={styles.label}>Checklist Pago:</Text>
-          {/* Use the CheckBox component */}
-          <View style={styles.checkboxContainer}>
-            <Checkbox
-              value={checklistPagoChecked}
-              onValueChange={(newValue) => setChecklistPagoChecked(newValue)}
-            />
-            <Text style={styles.checkboxLabel}>Sim</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={checklistPagoChecked}
+              onValueChange={(itemValue) => setChecklistPagoChecked(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Sim" value="Sim" />
+              <Picker.Item label="Não" value="Não" />
+            </Picker>
           </View>
 
           <Text style={styles.label}>Reembolsado:</Text>

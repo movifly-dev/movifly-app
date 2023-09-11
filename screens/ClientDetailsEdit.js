@@ -6,7 +6,6 @@ import { FIRESTORE_DB } from '../firebaseConfig';
 import { updateDoc, collection, doc } from 'firebase/firestore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useMain } from '../contexts/MainContext';
-import Checkbox from 'expo-checkbox';
 import { Picker } from '@react-native-picker/picker';
 import { TextInputMask } from 'react-native-masked-text';
 
@@ -127,7 +126,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
         valorVenda,
         lucro,
         formaPagamento,
-        checklistPagoChecked: checklistPagoChecked ? 'sim' : 'Não' ,
+        checklistPagoChecked,
         emailCliente,
         cpf,
       };
@@ -267,21 +266,30 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             />
 
             <Text style={styles.label}>Forma de Pagamento:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setFormaPagamento}
-              value={formaPagamento}
-              placeholder="Digite a forma de pagamento"
-            />
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={formaPagamento}
+                onValueChange={(itemValue) => setFormaPagamento(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Boleto" value="Boleto" />
+                <Picker.Item label="Pix" value="Pix" />
+                <Picker.Item label="Transferência Bancária" value="Transferência Bancária" />
+                <Picker.Item label="Cartão de crédito" value="Cartão de crédito" />
+              </Picker>
+            </View>
 
             <Text style={styles.label}>Checklist Pago:</Text>
             {/* Use the CheckBox component */}
-            <View style={styles.checkboxContainer}>
-              <Checkbox
-                value={checklistPagoChecked}
-                onValueChange={setChecklistPagoChecked}
-              />
-              <Text style={styles.checkboxLabel}>Sim</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={checklistPagoChecked}
+                onValueChange={(itemValue) => setChecklistPagoChecked(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Sim" value="Sim" />
+                <Picker.Item label="Não" value="Não" />
+              </Picker>
             </View>
 
             <Text style={styles.label}>Reembolsado:</Text>
