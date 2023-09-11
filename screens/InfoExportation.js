@@ -94,7 +94,7 @@ function ExcelExportView() {
             style={styles.exportButton}
             onPress={exportToExcel}
           >
-            <Text style={styles.exportButtonText}>Exportar Lista de Clientes</Text>
+            <Text style={styles.exportButtonText}>Exportar Lista de Vendas</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

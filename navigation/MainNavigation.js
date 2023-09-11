@@ -125,7 +125,7 @@ function ClientTabsGroup() {
         name="ClientsTab"
         component={ClientsTopTabs}
         options={{
-          title: 'Clientes',
+          title: 'Vendas',
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginLeft: 10 }}

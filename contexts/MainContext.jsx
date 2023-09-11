@@ -22,7 +22,7 @@ function MainProvider({ children }) {
       }));
       setClients(clientsData);
     } catch (error) {
-      throw new Error('Erro ao listar clientes');
+      throw new Error('Erro ao listar vendas');
     }
   };
 
