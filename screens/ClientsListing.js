@@ -1,12 +1,16 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useMain } from '../contexts/MainContext';
+import { TextInputMask } from 'react-native-masked-text'; // Import TextInputMask
 
 function ClientsListingView() {
   const [numClientsToLoad, setNumClientsToLoad] = useState(10);
+  const [nameFilter, setNameFilter] = useState('');
+  const [startDateFilter, setStartDateFilter] = useState('');
+  const [endDateFilter, setEndDateFilter] = useState('');
   const navigation = useNavigation();
   const { clients, fetchClients } = useMain();
 
@@ -14,26 +18,25 @@ function ClientsListingView() {
     fetchClients();
   }, []);
 
-  const reviewLabels = {
-    dataVenda: 'Data da Venda',
-    companhiaAerea: 'Companhia Aérea',
-    localizador: 'Localizador',
-    nomePassageiro: 'Nome do Passageiro',
-    nomeComprador: 'Nome do Comprador',
-    nomeVendedor: 'Nome do Vendedor',
-    contatoVendedor: 'Contato do Vendedor',
-    valorCompra: 'Valor da Compra',
-    valorVenda: 'Valor da Venda',
-    lucro: 'Lucro',
-    formaPagamento: 'Forma de Pagamento',
-    checklistPagoChecked: 'Checklist Pago',
-    checklistReembolsado: 'Checklist Reembolado',
-    emailCliente: 'E-mail do Cliente',
-    cpf: 'CPF',
-  };
-
   const handleLoadMore = () => {
     setNumClientsToLoad((prevNumClientsToLoad) => prevNumClientsToLoad + 5);
+  };
+
+  const filterClients = () => {
+    const filteredClients = clients.filter((client) => {
+      // Filter by name
+      const nameMatch = client.nomePassageiro.toLowerCase().includes(nameFilter.toLowerCase());
+
+      // Filter by start date
+      const startDateMatch = !startDateFilter || client.dataVoo >= startDateFilter;
+
+      // Filter by end date
+      const endDateMatch = !endDateFilter || client.dataVoo <= endDateFilter;
+
+      return nameMatch && startDateMatch && endDateMatch;
+    });
+
+    return filteredClients.slice(0, numClientsToLoad);
   };
 
   return (
@@ -50,20 +53,55 @@ function ClientsListingView() {
         }}
       >
         <View style={styles.clientsListingView}>
-          {clients?.slice(0, numClientsToLoad).map((client) => (
+          {/* Filter input for Nome do Passageiro */}
+          <TextInput
+            style={styles.filterInput}
+            placeholder="Filtrar por Nome do Passageiro"
+            value={nameFilter}
+            onChangeText={(text) => setNameFilter(text)}
+          />
+
+          {/* Filter input for Data do Voo (Start Date) with masking */}
+          <TextInputMask
+            style={styles.filterInput}
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY',
+            }}
+            value={startDateFilter}
+            onChangeText={(formatted, extracted) => setStartDateFilter(formatted)}
+            placeholder="Filtrar por Data do Voo (Data Inicial - DD/MM/AAAA)"
+          />
+
+          {/* Filter input for Data do Voo (End Date) with masking */}
+          <TextInputMask
+            style={styles.filterInput}
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY',
+            }}
+            value={endDateFilter}
+            onChangeText={(formatted, extracted) => setEndDateFilter(formatted)}
+            placeholder="Filtrar por Data do Voo (Data Final - DD/MM/AAAA)"
+          />
+
+          {filterClients().map((client) => (
             <TouchableOpacity
               key={client.id}
               style={styles.clientItem}
               onPress={() => navigation.navigate('ClientDetails', { client })}
             >
-              <Text style={styles.clientInfoLabel}>Nome do Comprador:</Text>
-              <Text style={styles.clientInfoValue}>{client.nomeComprador}</Text>
+              <Text style={styles.clientInfoLabel}>Nome do Passageiro:</Text>
+              <Text style={styles.clientInfoValue}>{client.nomePassageiro}</Text>
 
-              <Text style={styles.clientInfoLabel}>Data de Venda:</Text>
-              <Text style={styles.clientInfoValue}>{client.dataVenda}</Text>
+              <Text style={styles.clientInfoLabel}>Localizador:</Text>
+              <Text style={styles.clientInfoValue}>{client.localizador}</Text>
 
-              <Text style={styles.clientInfoLabel}>Nome do Vendedor:</Text>
-              <Text style={styles.clientInfoValue}>{client.nomeVendedor}</Text>
+              <Text style={styles.clientInfoLabel}>Companhia:</Text>
+              <Text style={styles.clientInfoValue}>{client.companhiaAerea}</Text>
+
+              <Text style={styles.clientInfoLabel}>Data do Voo:</Text>
+              <Text style={styles.clientInfoValue}>{client.dataVoo}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -111,5 +149,13 @@ const styles = StyleSheet.create({
   clientInfoValue: {
     flex: 2,
     fontSize: 16,
+  },
+  filterInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
 });

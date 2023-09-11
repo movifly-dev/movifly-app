@@ -195,14 +195,14 @@ function ClientsTopTabs() {
         name="ClientsRegister"
         component={ClientsRegisterView}
         options={{
-          tabBarLabel: 'Cadastro de Clientes',
+          tabBarLabel: 'Cadastro de Vendas',
         }}
       />
       <TopTabs.Screen
         name="ClientsListing"
         component={ClientsListingView}
         options={{
-          tabBarLabel: 'Listagem de Clientes',
+          tabBarLabel: 'Listagem de Vendas',
         }}
       />
     </TopTabs.Navigator>
@@ -329,7 +329,7 @@ function DrawerClient() {
         name="ClientsRegister"
         component={ClientsRegisterView}
         options={({ navigation }) => ({
-          title: 'Cadastro de Clientes',
+          title: 'Cadastro de Vendas',
           headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
@@ -337,7 +337,7 @@ function DrawerClient() {
         name="ClientsListing"
         component={ClientsListingView}
         options={({ navigation }) => ({
-          title: 'Listagem de Clientes',
+          title: 'Listagem de Vendas',
           headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />

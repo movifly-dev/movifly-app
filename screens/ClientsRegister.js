@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import { FIRESTORE_DB } from '../firebaseConfig';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useMain } from '../contexts/MainContext';
 import { TextInputMask } from 'react-native-masked-text';
 import { Picker } from '@react-native-picker/picker';
 
 function ClientRegisterView() {
+  const [dataVoo, setDataVoo] = useState('');
   const [dataVenda, setDataVenda] = useState('');
   const [companhiaAerea, setCompanhiaAerea] = useState('');
   const [localizador, setLocalizador] = useState('');
@@ -29,24 +30,26 @@ function ClientRegisterView() {
   const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
   useEffect(() => {
-    const requiredFields = [
-      dataVenda,
-      companhiaAerea,
-      localizador,
-      nomePassageiro,
-      nomeComprador,
-      nomeVendedor,
-      contatoVendedor,
-      valorCompra,
-      valorVenda,
-      lucro,
-      formaPagamento,
-      emailCliente,
-      cpf,
-    ];
-    const isFormCompleted = requiredFields.some((field) => field.trim() !== '') || checklistPagoChecked;
-    setIsFormCompleted(isFormCompleted);
+    // const requiredFields = [
+    //   dataVoo,
+    //   dataVenda,
+    //   companhiaAerea,
+    //   localizador,
+    //   nomePassageiro,
+    //   nomeComprador,
+    //   nomeVendedor,
+    //   contatoVendedor,
+    //   valorCompra,
+    //   valorVenda,
+    //   lucro,
+    //   formaPagamento,
+    //   emailCliente,
+    //   cpf,
+    // ];
+    // const isFormCompleted = requiredFields.some((field) => field.trim() !== '') || checklistPagoChecked;
+    setIsFormCompleted(true);
   }, [
+    dataVoo,
     dataVenda,
     companhiaAerea,
     localizador,
@@ -66,6 +69,7 @@ function ClientRegisterView() {
   const handleSubmit = async () => {
     try {
       const newClientData = {
+        dataVoo,
         dataVenda,
         companhiaAerea,
         localizador,
@@ -81,6 +85,7 @@ function ClientRegisterView() {
         checklistReembolsado,
         emailCliente,
         cpf,
+        createdAt: serverTimestamp(),
       };
       // Define the collection reference
       const clientesCollectionRef = collection(FIRESTORE_DB, 'clientes');
@@ -90,6 +95,7 @@ function ClientRegisterView() {
 
       alert('Data submitted successfully!');
       fetchClients();
+      setDataVoo('');
       setDataVenda('');
       setCompanhiaAerea('');
       setLocalizador('');
@@ -160,8 +166,19 @@ function ClientRegisterView() {
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.clientRegisterViewStyle}>
+          <Text style={styles.label}>Data do Voo:</Text>
+          <TextInputMask
+            style={styles.input}
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY',
+            }}
+            value={dataVoo}
+            onChangeText={setDataVoo}
+            placeholder="Digite a data do Voo"
+          />
+
           <Text style={styles.label}>Data da Venda:</Text>
-          {/* Use the TextInputMask component for the dataVenda input */}
           <TextInputMask
             style={styles.input}
             type={'datetime'}

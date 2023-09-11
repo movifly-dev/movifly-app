@@ -11,6 +11,7 @@ import { Picker } from '@react-native-picker/picker';
 import { TextInputMask } from 'react-native-masked-text';
 
 function ClientDetailsEdit({ isVisible, client, closeModal }) {
+  const [dataVoo, setDataVoo] = useState(client.dataVoo);
   const [dataVenda, setDataVenda] = useState(client.dataVenda);
   const [companhiaAerea, setCompanhiaAerea] = useState(client.companhiaAerea);
   const [localizador, setLocalizador] = useState(client.localizador);
@@ -66,6 +67,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
 
   useEffect(() => {
     const requiredFields = [
+      dataVoo,
       dataVenda,
       companhiaAerea,
       localizador,
@@ -83,6 +85,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
     ];
     setIsFormCompleted(requiredFields.some((field) => field.trim() !== ''));
   }, [
+    dataVoo,
     dataVenda,
     companhiaAerea,
     localizador,
@@ -112,6 +115,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const handleSubmit = async () => {
     try {
       const updatedClientData = {
+        dataVoo,
         dataVenda,
         companhiaAerea,
         localizador,
@@ -153,6 +157,18 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             </TouchableOpacity>
           </View>
           <View style={styles.clientRegisterView}>
+            <Text style={styles.label}>Data do Voo:</Text>
+            <TextInputMask
+              style={styles.input}
+              type={'datetime'}
+              options={{
+                format: 'DD/MM/YYYY',
+              }}
+              value={dataVoo}
+              onChangeText={setDataVoo}
+              placeholder="Digite a data do Voo"
+            />
+
             <Text style={styles.label}>Data da Venda:</Text>
             <TextInputMask
               style={styles.input}

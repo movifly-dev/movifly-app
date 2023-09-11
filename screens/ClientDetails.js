@@ -19,6 +19,7 @@ function ClientDetails({ route }) {
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
 
   const parsedLabels = {
+    dataVoo: 'Data do Voo',
     dataVenda: 'Data da Venda',
     companhiaAerea: 'Companhia Aérea',
     localizador: 'Localizador',
