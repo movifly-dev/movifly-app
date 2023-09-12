@@ -36,7 +36,6 @@ function ClientDetails({ route }) {
     emailCliente: 'E-mail do Cliente',
     cpf: 'CPF',
   };
-  console.log(clientDetails)
   const toggleModalEdit = () => {
     setIsModalEditVisible((prev) => !prev);
   };

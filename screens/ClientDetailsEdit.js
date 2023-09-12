@@ -13,12 +13,12 @@ import formatStringToDate from '../utils/formatStringToDate';
 import formatDateToString from '../utils/formatDateToString';
 
 function ClientDetailsEdit({ isVisible, client, closeModal }) {
-  const [dataVooSelected, setDataVooSelected] = useState(dataVoo === '' ? false : true);
-  const [dataVendaSelected, setDataVendaSelected] = useState(dataVenda === '' ? false : true);
+  const [dataVooSelected, setDataVooSelected] = useState(client.dataVoo === '' ? false : true);
+  const [dataVendaSelected, setDataVendaSelected] = useState(client.dataVenda === '' ? false : true);
   const [showDataVooPicker, setShowDataVooPicker] = useState(false);
   const [showDataVendaPicker, setShowDataVendaPicker] = useState(false);
-  const [dataVoo, setDataVoo] = useState(dataVoo === '' ? new Date() : formatStringToDate(client.dataVoo));
-  const [dataVenda, setDataVenda] = useState(dataVenda === '' ? new Date() : formatStringToDate(client.dataVenda));
+  const [dataVoo, setDataVoo] = useState(client.dataVoo === '' ? new Date() : formatStringToDate(client.dataVoo));
+  const [dataVenda, setDataVenda] = useState(client.dataVenda === '' ? new Date() : formatStringToDate(client.dataVenda));
   const [companhiaAerea, setCompanhiaAerea] = useState(client.companhiaAerea);
   const [localizador, setLocalizador] = useState(client.localizador);
   const [nomePassageiro, setNomePassageiro] = useState(client.nomePassageiro);
@@ -34,7 +34,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const [cpf, setCpf] = useState(client.cpf);
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
-  const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
+  // const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
   // Helper function to convert a BRL currency string to a number
   const parseCurrencyValue = (currencyString) => {
@@ -159,7 +159,6 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
       setDataVoo(selectedDate);
     }
   };
-
   const handleDataVendaChange = (event, selectedDate) => {
     setShowDataVendaPicker(false);
     setDataVendaSelected(true);
@@ -167,7 +166,6 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
       setDataVenda(selectedDate);
     }
   };
-
   return (
     <Modal visible={isVisible} animationType="slide" onRequestClose={closeModal}>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -181,7 +179,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             {/* Date of Flight */}
             <View style={{marginBottom: 16}}>
               <Text style={{marginBottom: 8}}>Data do Voo:</Text>
-              <Button title={dataVooSelected ? formatDateToString(dataVoo) : 'Selecionar Data'} onPress={() => setShowDataVooPicker(true)} />
+              <Button title={dataVooSelected ? dataVoo === '' ? 'Selecionar Data' : formatDateToString(dataVoo) : 'Selecionar Data'} onPress={() => setShowDataVooPicker(true)} />
               {showDataVooPicker && (
                 <DateTimePickerModal
                   value={typeof dataVoo === 'object' ? dataVoo : formatStringToDate(dataVoo)}
@@ -195,7 +193,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             {/* Date of Sale */}
             <View style={{marginBottom: 20, marginTop: 8}}>
               <Text style={{marginBottom: 8}}>Data da Venda:</Text>
-              <Button title={dataVendaSelected ? formatDateToString(dataVenda) : 'Selecionar Data'} onPress={() => setShowDataVendaPicker(true)} />
+              <Button title={dataVendaSelected ? dataVenda === '' ? 'Selecionar Data' : formatDateToString(dataVenda) : 'Selecionar Data'} onPress={() => setShowDataVendaPicker(true)} />
               {showDataVendaPicker && (
                 <DateTimePickerModal
                   value={typeof dataVenda === 'object' ? dataVenda : formatStringToDate(dataVenda)}
