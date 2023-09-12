@@ -6,10 +6,16 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useMain } from '../contexts/MainContext';
 import { TextInputMask } from 'react-native-masked-text';
 import { Picker } from '@react-native-picker/picker';
+import DateTimePickerModal from '@react-native-community/datetimepicker';
+import formatDateToString from '../utils/formatDateToString';
 
 function ClientRegisterView() {
-  const [dataVoo, setDataVoo] = useState('');
-  const [dataVenda, setDataVenda] = useState('');
+  const [dataVooSelected, setDataVooSelected] = useState(false);
+  const [dataVendaSelected, setDataVendaSelected] = useState(false);
+  const [showDataVooPicker, setShowDataVooPicker] = useState(false);
+  const [showDataVendaPicker, setShowDataVendaPicker] = useState(false);
+  const [dataVoo, setDataVoo] = useState(new Date());
+  const [dataVenda, setDataVenda] = useState(new Date());
   const [companhiaAerea, setCompanhiaAerea] = useState('');
   const [localizador, setLocalizador] = useState('');
   const [nomePassageiro, setNomePassageiro] = useState('');
@@ -23,7 +29,7 @@ function ClientRegisterView() {
   const [emailCliente, setEmailCliente] = useState('');
   const [cpf, setCpf] = useState('');
   const [checklistPagoChecked, setChecklistPagoChecked] = useState('Não');
-  const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
+  // const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
   const [isFormCompleted, setIsFormCompleted] = useState(false);
   const { fetchClients } = useMain();
   const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
@@ -68,8 +74,8 @@ function ClientRegisterView() {
   const handleSubmit = async () => {
     try {
       const newClientData = {
-        dataVoo,
-        dataVenda,
+        dataVoo: dataVooSelected ? formatDateToString(dataVoo) : '',
+        dataVenda: dataVendaSelected ? formatDateToString(dataVenda) : '',
         companhiaAerea,
         localizador,
         nomePassageiro,
@@ -81,7 +87,7 @@ function ClientRegisterView() {
         lucro,
         formaPagamento,
         checklistPagoChecked,
-        checklistReembolsado,
+        // checklistReembolsado,
         emailCliente,
         cpf,
         createdAt: serverTimestamp(),
@@ -94,8 +100,10 @@ function ClientRegisterView() {
 
       alert('Data submitted successfully!');
       fetchClients();
-      setDataVoo('');
-      setDataVenda('');
+      setDataVooSelected(false);
+      setDataVendaSelected(false);
+      setDataVoo(new Date());
+      setDataVenda(new Date());
       setCompanhiaAerea('');
       setLocalizador('');
       setNomePassageiro('');
@@ -107,7 +115,7 @@ function ClientRegisterView() {
       setLucro('');
       setFormaPagamento('');
       setChecklistPagoChecked('');
-      setChecklistReembolsado('nao_solicitado');
+      // setChecklistReembolsado('nao_solicitado');
       setEmailCliente('');
       setCpf('');
     } catch (error) {
@@ -161,34 +169,53 @@ function ClientRegisterView() {
     }
   }, [valorCompra, valorVenda]);
 
+  const handleDataVooChange = (event, selectedDate) => {
+    setShowDataVooPicker(false);
+    setDataVooSelected(true);
+    if (selectedDate) {
+      setDataVoo(selectedDate);
+    }
+  };
+
+  const handleDataVendaChange = (event, selectedDate) => {
+    setShowDataVendaPicker(false);
+    setDataVendaSelected(true);
+    if (selectedDate) {
+      setDataVenda(selectedDate);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.clientRegisterViewStyle}>
-          <Text style={styles.label}>Data do Voo:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'datetime'}
-            options={{
-              format: 'DD/MM/YYYY',
-            }}
-            value={dataVoo}
-            onChangeText={setDataVoo}
-            placeholder="Digite a data do Voo"
-          />
+          {/* Date of Flight */}
+          <View style={{marginBottom: 16}}>
+            <Text style={{marginBottom: 8}}>Data do Voo:</Text>
+            <Button title={dataVooSelected ? formatDateToString(dataVoo) : 'Selecionar Data'} onPress={() => setShowDataVooPicker(true)} />
+            {showDataVooPicker && (
+              <DateTimePickerModal
+                value={dataVoo}
+                mode="date"
+                display="calendar"
+                onChange={handleDataVooChange}
+              />
+            )}
+          </View>
 
-          <Text style={styles.label}>Data da Venda:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'datetime'}
-            options={{
-              format: 'DD/MM/YYYY',
-            }}
-            value={dataVenda}
-            onChangeText={setDataVenda}
-            placeholder="Digite a data da venda"
-          />
-
+          {/* Date of Sale */}
+          <View style={{marginBottom: 20, marginTop: 8}}>
+            <Text style={{marginBottom: 8}}>Data da Venda:</Text>
+            <Button title={dataVendaSelected ? formatDateToString(dataVenda) : 'Selecionar Data'} onPress={() => setShowDataVendaPicker(true)} />
+            {showDataVendaPicker && (
+              <DateTimePickerModal
+                value={dataVenda}
+                mode="date"
+                display="calendar"
+                onChange={handleDataVendaChange}
+              />
+            )}
+          </View>
           <Text style={styles.label}>Companhia Aérea:</Text>
           <TextInput
             style={styles.input}
@@ -297,7 +324,7 @@ function ClientRegisterView() {
             </Picker>
           </View>
 
-          <Text style={styles.label}>Reembolsado:</Text>
+          {/* <Text style={styles.label}>Reembolsado:</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={checklistReembolsado}
@@ -308,7 +335,7 @@ function ClientRegisterView() {
                 <Picker.Item key={option} label={option} value={option} />
               ))}
             </Picker>
-          </View>
+          </View> */}
 
           <Text style={styles.label}>E-mail do Cliente:</Text>
           <TextInput

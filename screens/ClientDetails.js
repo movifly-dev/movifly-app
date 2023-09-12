@@ -8,12 +8,13 @@ import { useNavigation } from '@react-navigation/native';
 import { useMain } from '../contexts/MainContext';
 import ClientDetailsEdit from './ClientDetailsEdit';
 import DeleteConfirmationModal from '../components/Clients/DeleteConfirmationModal';
+import formatDateToString from '../utils/formatDateToString';
 
 
 function ClientDetails({ route }) {
   const { fetchClients, clients } = useMain();
   const { client } = route.params;
-  const { id, ...clientDetails } = clients.find(clientDetails => clientDetails.id === client.id);
+  const { id, createdAt, ...clientDetails } = clients.find(clientDetails => clientDetails.id === client.id);
   const navigation = useNavigation();
   const [isModalEditVisible, setIsModalEditVisible] = useState(false);
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
@@ -32,11 +33,10 @@ function ClientDetails({ route }) {
     lucro: 'Lucro',
     formaPagamento: 'Forma de Pagamento',
     checklistPagoChecked: 'Checklist Pago',
-    checklistReembolsado: 'Checklist Reembolado',
     emailCliente: 'E-mail do Cliente',
     cpf: 'CPF',
   };
-
+  console.log(clientDetails)
   const toggleModalEdit = () => {
     setIsModalEditVisible((prev) => !prev);
   };

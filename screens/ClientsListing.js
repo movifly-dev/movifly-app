@@ -70,7 +70,7 @@ function ClientsListingView() {
             }}
             value={startDateFilter}
             onChangeText={(formatted, extracted) => setStartDateFilter(formatted)}
-            placeholder="Filtrar por Data do Voo (Data Inicial - DD/MM/AAAA)"
+            placeholder="Filtrar por Data do Voo (Data Inicial)"
           />
 
           {/* Filter input for Data do Voo (End Date) with masking */}
@@ -82,7 +82,7 @@ function ClientsListingView() {
             }}
             value={endDateFilter}
             onChangeText={(formatted, extracted) => setEndDateFilter(formatted)}
-            placeholder="Filtrar por Data do Voo (Data Final - DD/MM/AAAA)"
+            placeholder="Filtrar por Data do Voo (Data Final)"
           />
 
           {filterClients().map((client) => (

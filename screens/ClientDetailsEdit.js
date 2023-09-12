@@ -7,11 +7,18 @@ import { updateDoc, collection, doc } from 'firebase/firestore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useMain } from '../contexts/MainContext';
 import { Picker } from '@react-native-picker/picker';
+import DateTimePickerModal from '@react-native-community/datetimepicker';
 import { TextInputMask } from 'react-native-masked-text';
+import formatStringToDate from '../utils/formatStringToDate';
+import formatDateToString from '../utils/formatDateToString';
 
 function ClientDetailsEdit({ isVisible, client, closeModal }) {
-  const [dataVoo, setDataVoo] = useState(client.dataVoo);
-  const [dataVenda, setDataVenda] = useState(client.dataVenda);
+  const [dataVooSelected, setDataVooSelected] = useState(dataVoo === '' ? false : true);
+  const [dataVendaSelected, setDataVendaSelected] = useState(dataVenda === '' ? false : true);
+  const [showDataVooPicker, setShowDataVooPicker] = useState(false);
+  const [showDataVendaPicker, setShowDataVendaPicker] = useState(false);
+  const [dataVoo, setDataVoo] = useState(dataVoo === '' ? new Date() : formatStringToDate(client.dataVoo));
+  const [dataVenda, setDataVenda] = useState(dataVenda === '' ? new Date() : formatStringToDate(client.dataVenda));
   const [companhiaAerea, setCompanhiaAerea] = useState(client.companhiaAerea);
   const [localizador, setLocalizador] = useState(client.localizador);
   const [nomePassageiro, setNomePassageiro] = useState(client.nomePassageiro);
@@ -25,9 +32,8 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const [checklistPagoChecked, setChecklistPagoChecked] = useState(client.checklistPagoChecked);
   const [emailCliente, setEmailCliente] = useState(client.emailCliente);
   const [cpf, setCpf] = useState(client.cpf);
-  const [isFormCompleted, setIsFormCompleted] = useState(false);
+  const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
-  const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
   const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
   // Helper function to convert a BRL currency string to a number
@@ -64,42 +70,42 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
     return (valorVendaNumber - valorCompraNumber).toFixed(2);
   };
 
-  useEffect(() => {
-    const requiredFields = [
-      dataVoo,
-      dataVenda,
-      companhiaAerea,
-      localizador,
-      nomePassageiro,
-      nomeComprador,
-      nomeVendedor,
-      contatoVendedor,
-      valorCompra,
-      valorVenda,
-      lucro,
-      formaPagamento,
-      checklistPagoChecked,
-      emailCliente,
-      cpf,
-    ];
-    setIsFormCompleted(requiredFields.some((field) => field.trim() !== ''));
-  }, [
-    dataVoo,
-    dataVenda,
-    companhiaAerea,
-    localizador,
-    nomePassageiro,
-    nomeComprador,
-    nomeVendedor,
-    contatoVendedor,
-    valorCompra,
-    valorVenda,
-    lucro,
-    formaPagamento,
-    checklistPagoChecked,
-    emailCliente,
-    cpf,
-  ]);
+  // useEffect(() => {
+  //   // const requiredFields = [
+  //   //   dataVoo,
+  //   //   dataVenda,
+  //   //   companhiaAerea,
+  //   //   localizador,
+  //   //   nomePassageiro,
+  //   //   nomeComprador,
+  //   //   nomeVendedor,
+  //   //   contatoVendedor,
+  //   //   valorCompra,
+  //   //   valorVenda,
+  //   //   lucro,
+  //   //   formaPagamento,
+  //   //   checklistPagoChecked,
+  //   //   emailCliente,
+  //   //   cpf,
+  //   // ];
+  //   // setIsFormCompleted(requiredFields.some((field) => field.trim() !== ''));
+  // }, [
+  //   dataVoo,
+  //   dataVenda,
+  //   companhiaAerea,
+  //   localizador,
+  //   nomePassageiro,
+  //   nomeComprador,
+  //   nomeVendedor,
+  //   contatoVendedor,
+  //   valorCompra,
+  //   valorVenda,
+  //   lucro,
+  //   formaPagamento,
+  //   checklistPagoChecked,
+  //   emailCliente,
+  //   cpf,
+  // ]);
 
   useEffect(() => {
     if (valorCompra && valorVenda) {
@@ -114,8 +120,8 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const handleSubmit = async () => {
     try {
       const updatedClientData = {
-        dataVoo,
-        dataVenda,
+        dataVoo: dataVooSelected ? typeof dataVoo === 'object' ? formatDateToString(dataVoo) : dataVoo : '',
+        dataVenda: dataVendaSelected ? typeof dataVenda === 'object' ? formatDateToString(dataVenda) : dataVenda : '',
         companhiaAerea,
         localizador,
         nomePassageiro,
@@ -146,6 +152,22 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
     }
   };
 
+  const handleDataVooChange = (event, selectedDate) => {
+    setShowDataVooPicker(false);
+    setDataVooSelected(true);
+    if (selectedDate) {
+      setDataVoo(selectedDate);
+    }
+  };
+
+  const handleDataVendaChange = (event, selectedDate) => {
+    setShowDataVendaPicker(false);
+    setDataVendaSelected(true);
+    if (selectedDate) {
+      setDataVenda(selectedDate);
+    }
+  };
+
   return (
     <Modal visible={isVisible} animationType="slide" onRequestClose={closeModal}>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -156,29 +178,33 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             </TouchableOpacity>
           </View>
           <View style={styles.clientRegisterView}>
-            <Text style={styles.label}>Data do Voo:</Text>
-            <TextInputMask
-              style={styles.input}
-              type={'datetime'}
-              options={{
-                format: 'DD/MM/YYYY',
-              }}
-              value={dataVoo}
-              onChangeText={setDataVoo}
-              placeholder="Digite a data do Voo"
-            />
+            {/* Date of Flight */}
+            <View style={{marginBottom: 16}}>
+              <Text style={{marginBottom: 8}}>Data do Voo:</Text>
+              <Button title={dataVooSelected ? formatDateToString(dataVoo) : 'Selecionar Data'} onPress={() => setShowDataVooPicker(true)} />
+              {showDataVooPicker && (
+                <DateTimePickerModal
+                  value={typeof dataVoo === 'object' ? dataVoo : formatStringToDate(dataVoo)}
+                  mode="date"
+                  display="calendar"
+                  onChange={handleDataVooChange}
+                />
+              )}
+            </View>
 
-            <Text style={styles.label}>Data da Venda:</Text>
-            <TextInputMask
-              style={styles.input}
-              type={'datetime'}
-              options={{
-                format: 'DD/MM/YYYY',
-              }}
-              value={dataVenda}
-              onChangeText={setDataVenda}
-              placeholder="Digite a data da venda"
-            />
+            {/* Date of Sale */}
+            <View style={{marginBottom: 20, marginTop: 8}}>
+              <Text style={{marginBottom: 8}}>Data da Venda:</Text>
+              <Button title={dataVendaSelected ? formatDateToString(dataVenda) : 'Selecionar Data'} onPress={() => setShowDataVendaPicker(true)} />
+              {showDataVendaPicker && (
+                <DateTimePickerModal
+                  value={typeof dataVenda === 'object' ? dataVenda : formatStringToDate(dataVenda)}
+                  mode="date"
+                  display="calendar"
+                  onChange={handleDataVendaChange}
+                />
+              )}
+            </View>
 
             <Text style={styles.label}>Companhia Aérea:</Text>
             <TextInput
@@ -292,19 +318,6 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
               </Picker>
             </View>
 
-            <Text style={styles.label}>Reembolsado:</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={checklistReembolsado}
-                onValueChange={setChecklistReembolsado}
-                style={styles.picker}
-              >
-                {checklistOptions.map((option) => (
-                  <Picker.Item key={option} label={option} value={option} />
-                ))}
-              </Picker>
-            </View>
-
             <Text style={styles.label}>E-mail do Cliente:</Text>
             <TextInput
               style={styles.input}
@@ -322,7 +335,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
               placeholder="Digite o CPF"
             />
 
-            <Button title="Salvar" onPress={handleSubmit} disabled={!isFormCompleted || !nomeComprador} />
+            <Button title="Salvar" onPress={handleSubmit} disabled={!isFormCompleted} />
           </View>
         </ScrollView>
       </SafeAreaView>
