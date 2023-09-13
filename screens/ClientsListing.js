@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 10,
     borderRadius: 10,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#e06c2b',
     elevation: 2,
     shadowColor: '#000',
     shadowOpacity: 0.3,
@@ -145,10 +145,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginTop: 10,
+    color: '#FFF',
   },
   clientInfoValue: {
     flex: 2,
     fontSize: 16,
+    color: '#FFF',
   },
   filterInput: {
     height: 40,

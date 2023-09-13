@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   exportButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#ef7946',
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,

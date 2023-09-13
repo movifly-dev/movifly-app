@@ -47,7 +47,7 @@ function BaseStackGroup() {
         name="ClientDetails"
         component={ClientDetails}
         options={({ navigation }) => ({
-          title: 'Detalhes do cliente',
+          title: 'Detalhes da venda',
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginRight: 15 }}
@@ -101,7 +101,7 @@ function ClientTabsGroup() {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#1DA1F2',
+        tabBarActiveTintColor: '#ef7946',
         tabBarInactiveTintColor: 'gray',
       })}
     >
@@ -187,7 +187,7 @@ function ClientsTopTabs() {
         tabBarIndicatorStyle: {
           height: 5,
           borderRadius: 5,
-          backgroundColor: '#1DA1F2',
+          backgroundColor: '#ef7946',
         },
       }}
     >
@@ -222,7 +222,7 @@ function TicketsTopTabs() {
         tabBarIndicatorStyle: {
           height: 5,
           borderRadius: 5,
-          backgroundColor: '#1DA1F2',
+          backgroundColor: '#ef7946',
         },
       }}
     >
@@ -257,7 +257,7 @@ function ToolsTopTabs() {
         tabBarIndicatorStyle: {
           height: 5,
           borderRadius: 5,
-          backgroundColor: '#1DA1F2',
+          backgroundColor: '#ef7946',
         },
       }}
     >
@@ -307,7 +307,6 @@ function DrawerClient() {
     <Drawer.Navigator
       drawerContent={(props) => (
         <DrawerContentScrollView {...props}>
-          {/* Your existing drawer items */}
           <DrawerItemList {...props} />
           <LogoutButton
             onPress={() => {
@@ -316,7 +315,8 @@ function DrawerClient() {
             }}
           />
         </DrawerContentScrollView>
-      )}>
+      )}
+    >
       <Drawer.Screen
         name="Home"
         component={BaseStackGroup}

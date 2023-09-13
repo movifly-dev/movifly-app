@@ -7,7 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useMain } from '../contexts/MainContext';
 import ClientDetailsEdit from './ClientDetailsEdit';
-import DeleteConfirmationModal from '../components/Clients/DeleteConfirmationModal';
+import DeleteConfirmationModal from '../components/Sells/DeleteConfirmationModal';
 import formatDateToString from '../utils/formatDateToString';
 
 
@@ -68,10 +68,10 @@ function ClientDetails({ route }) {
         <View style={styles.clientDetailsView}>
           <View style={styles.clientDetailsOperations}>
             <TouchableOpacity onPress={toggleModalEdit} style={styles.touchableSpace}>
-              <MaterialIcons name="edit" size={26} color="black" />
+              <MaterialIcons name="edit" size={26} color="white" />
             </TouchableOpacity>
             <TouchableOpacity onPress={toggleModalDelete} style={styles.touchableSpace}>
-              <MaterialIcons name="delete" size={26} color="black" />
+              <MaterialIcons name="delete" size={26} color="white" />
             </TouchableOpacity>
           </View>
           {Object.entries(clientDetails).map(([key, value]) => (
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     margin: 10,
     borderRadius: 10,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: 'rgba(239, 121, 70, 1)',
     elevation: 2,
     shadowColor: '#000',
     shadowOpacity: 0.3,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     gap: 25,
     borderBottomWidth: 1,
     paddingBottom: 12,
-    borderColor: '#1b1b1b'
+    borderColor: '#fff',
   },
   clientInfo: {
     flexDirection: 'row',
@@ -143,8 +143,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginTop: 12,
+    color: '#fff'
   },
   clientInfoValue: {
+    color: '#fff',
     fontSize: 16,
   },
 });

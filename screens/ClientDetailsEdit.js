@@ -170,16 +170,25 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
     <Modal visible={isVisible} animationType="slide" onRequestClose={closeModal}>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View>
+          <View style={{
+            padding: 16,
+            paddingBottom: 0,
+            display: 'flex',
+            alignItems: 'flex-end'
+          }}>
             <TouchableOpacity onPress={() => closeModal()}>
-              <MaterialIcons name="close" size={24} color="black" />
+              <MaterialIcons name="close" size={28} color="white" style={{backgroundColor: '#ef7946', width: 36, borderRadius: 100, padding: 4}} />
             </TouchableOpacity>
           </View>
           <View style={styles.clientRegisterView}>
             {/* Date of Flight */}
             <View style={{marginBottom: 16}}>
               <Text style={{marginBottom: 8}}>Data do Voo:</Text>
-              <Button title={dataVooSelected ? dataVoo === '' ? 'Selecionar Data' : formatDateToString(dataVoo) : 'Selecionar Data'} onPress={() => setShowDataVooPicker(true)} />
+              <Button
+                title={dataVooSelected ? dataVoo === '' ? 'Selecionar Data' : formatDateToString(dataVoo) : 'Selecionar Data'}
+                onPress={() => setShowDataVooPicker(true)}
+                color="#ef7946"
+              />
               {showDataVooPicker && (
                 <DateTimePickerModal
                   value={typeof dataVoo === 'object' ? dataVoo : formatStringToDate(dataVoo)}
@@ -193,7 +202,11 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             {/* Date of Sale */}
             <View style={{marginBottom: 20, marginTop: 8}}>
               <Text style={{marginBottom: 8}}>Data da Venda:</Text>
-              <Button title={dataVendaSelected ? dataVenda === '' ? 'Selecionar Data' : formatDateToString(dataVenda) : 'Selecionar Data'} onPress={() => setShowDataVendaPicker(true)} />
+              <Button
+                title={dataVendaSelected ? dataVenda === '' ? 'Selecionar Data' : formatDateToString(dataVenda) : 'Selecionar Data'}
+                onPress={() => setShowDataVendaPicker(true)}
+                color="#ef7946"
+              />
               {showDataVendaPicker && (
                 <DateTimePickerModal
                   value={typeof dataVenda === 'object' ? dataVenda : formatStringToDate(dataVenda)}
@@ -333,7 +346,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
               placeholder="Digite o CPF"
             />
 
-            <Button title="Salvar" onPress={handleSubmit} disabled={!isFormCompleted} />
+            <Button color="#ef7946" title="Salvar" onPress={handleSubmit} disabled={!isFormCompleted} />
           </View>
         </ScrollView>
       </SafeAreaView>

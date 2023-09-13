@@ -101,7 +101,7 @@ function TicketRegisterView() {
             placeholder="Digite o código da reserva ou ID da viagem"
           />
 
-          <Button title="Buscar Detalhes da Reserva" onPress={handleLinkReservation} />
+          <Button title="Buscar Detalhes da Reserva" onPress={handleLinkReservation} color="rgba(239, 121, 70, 1)"/>
 
           {flightDetails && (
             <View style={styles.flightDetailsContainer}>

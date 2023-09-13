@@ -30,46 +30,29 @@ function ClientRegisterView() {
   const [cpf, setCpf] = useState('');
   const [checklistPagoChecked, setChecklistPagoChecked] = useState('Não');
   // const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
-  const [isFormCompleted, setIsFormCompleted] = useState(false);
+  const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
-  const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
+  // const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
 
-  useEffect(() => {
-    // const requiredFields = [
-    //   dataVoo,
-    //   dataVenda,
-    //   companhiaAerea,
-    //   localizador,
-    //   nomePassageiro,
-    //   nomeComprador,
-    //   nomeVendedor,
-    //   contatoVendedor,
-    //   valorCompra,
-    //   valorVenda,
-    //   lucro,
-    //   formaPagamento,
-    //   emailCliente,
-    //   cpf,
-    // ];
-    // const isFormCompleted = requiredFields.some((field) => field.trim() !== '') || checklistPagoChecked;
-    setIsFormCompleted(true);
-  }, [
-    dataVoo,
-    dataVenda,
-    companhiaAerea,
-    localizador,
-    nomePassageiro,
-    nomeComprador,
-    nomeVendedor,
-    contatoVendedor,
-    valorCompra,
-    valorVenda,
-    lucro,
-    formaPagamento,
-    checklistPagoChecked,
-    emailCliente,
-    cpf,
-  ]);
+  // useEffect(() => {
+  // const requiredFields = [
+  //   dataVoo,
+  //   dataVenda,
+  //   companhiaAerea,
+  //   localizador,
+  //   nomePassageiro,
+  //   nomeComprador,
+  //   nomeVendedor,
+  //   contatoVendedor,
+  //   valorCompra,
+  //   valorVenda,
+  //   lucro,
+  //   formaPagamento,
+  //   emailCliente,
+  //   cpf,
+  // ];
+  // const isFormCompleted = requiredFields.some((field) => field.trim() !== '') || checklistPagoChecked;
+  // }, []);
 
   const handleSubmit = async () => {
     try {
@@ -192,7 +175,7 @@ function ClientRegisterView() {
           {/* Date of Flight */}
           <View style={{marginBottom: 16}}>
             <Text style={{marginBottom: 8}}>Data do Voo:</Text>
-            <Button title={dataVooSelected ? formatDateToString(dataVoo) : 'Selecionar Data'} onPress={() => setShowDataVooPicker(true)} />
+            <Button color="#ef7946" title={dataVooSelected ? formatDateToString(dataVoo) : 'Selecionar Data'} onPress={() => setShowDataVooPicker(true)} />
             {showDataVooPicker && (
               <DateTimePickerModal
                 value={dataVoo}
@@ -206,7 +189,7 @@ function ClientRegisterView() {
           {/* Date of Sale */}
           <View style={{marginBottom: 20, marginTop: 8}}>
             <Text style={{marginBottom: 8}}>Data da Venda:</Text>
-            <Button title={dataVendaSelected ? formatDateToString(dataVenda) : 'Selecionar Data'} onPress={() => setShowDataVendaPicker(true)} />
+            <Button color="#ef7946" title={dataVendaSelected ? formatDateToString(dataVenda) : 'Selecionar Data'} onPress={() => setShowDataVendaPicker(true)} />
             {showDataVendaPicker && (
               <DateTimePickerModal
                 value={dataVenda}
@@ -355,7 +338,7 @@ function ClientRegisterView() {
             placeholder="Digite o CPF"
           />
 
-          <Button title="Cadastrar" onPress={handleSubmit} disabled={!isFormCompleted} />
+          <Button color="#ef7946" title="Cadastrar" onPress={handleSubmit} disabled={!isFormCompleted} />
         </View>
       </ScrollView>
     </SafeAreaView>
