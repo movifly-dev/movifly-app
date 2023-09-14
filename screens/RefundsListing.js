@@ -9,7 +9,7 @@ import { TextInputMask } from 'react-native-masked-text'; // Import TextInputMas
 import formatDateToString from '../utils/formatDateToString';
 import formatStringToDate from '../utils/formatStringToDate';
 
-function ClientsListingView() {
+function RefundsListingView() {
   const [numClientsToLoad, setNumClientsToLoad] = useState(10);
   const [nameFilter, setNameFilter] = useState('');
   const navigation = useNavigation();
@@ -21,8 +21,6 @@ function ClientsListingView() {
   const [showEndDateFilterPicker, setShowEndDateFilterPicker] = useState(false);
   const [startDateSelected, setStartDateSelected] = useState(false);
   const [endDateSelected, setEndDateSelected] = useState(false);
-
-  const [filtersActive, setFiltersActive] = useState(false);
 
   useEffect(() => {
     fetchClients();
@@ -47,15 +45,6 @@ function ClientsListingView() {
     }
   };
 
-  useEffect(() => {
-    // Check if any filter is active and set filtersActive state accordingly
-    if (startDateSelected || endDateSelected || nameFilter) {
-      setFiltersActive(true);
-    } else {
-      setFiltersActive(false);
-    }
-  }, [startDateSelected, endDateSelected, nameFilter]);
-
   const filterClients = () => {
     const filteredClients = clients.filter((client) => {
       // Filter by name
@@ -73,15 +62,6 @@ function ClientsListingView() {
     return filteredClients.slice(0, numClientsToLoad);
   };
 
-  const clearFilters = () => {
-    setStartDateSelected(false);
-    setEndDateSelected(false);
-    setNameFilter('');
-    setFiltersActive(false);
-    setStartDateFilter(new Date());
-    setEndDateFilter(new Date());
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -95,7 +75,7 @@ function ClientsListingView() {
           }
         }}
       >
-        <View style={styles.clientsListingView}>
+        <View style={styles.refundsListingView}>
           {/* Filter input for Nome do Passageiro */}
           <TextInput
             style={styles.filterInput}
@@ -104,7 +84,7 @@ function ClientsListingView() {
             onChangeText={(text) => setNameFilter(text)}
           />
 
-          <View style={{marginBottom: 10}}>
+          <View style={{marginBottom: 16}}>
             <Text style={{marginBottom: 8}}>Data Inicial:</Text>
             <Button
               title={startDateSelected ? startDateFilter === '' ? 'Selecionar Data' : formatDateToString(startDateFilter) : 'Selecionar Data'}
@@ -136,12 +116,6 @@ function ClientsListingView() {
                 onChange={handleDataVooEndChange}
               />
             )}
-
-            {filtersActive && (
-              <View style={styles.filterContainer}>
-                <Button title="Limpar Filtros" onPress={clearFilters} />
-              </View>
-            )}
           </View>
 
           {filterClients().map((client) => (
@@ -169,14 +143,14 @@ function ClientsListingView() {
   );
 }
 
-export default ClientsListingView;
+export default RefundsListingView;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
   },
-  clientsListingView: {
+  refundsListingView: {
     flex: 1,
     padding: 20,
   },
@@ -219,7 +193,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
-  filterContainer: {
-    marginTop: 24,
-  }
 });

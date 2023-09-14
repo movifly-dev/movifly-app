@@ -17,6 +17,7 @@ import { DrawerContentScrollView, createDrawerNavigator, DrawerItemList } from '
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // [IMPORT] =========== CLIENT SCREENS
 
@@ -26,10 +27,11 @@ import ClientsListingView from '../screens/ClientsListing';
 import TicketsRegisterView from '../screens/TicketRegister';
 import TicketsListingView from '../screens/TicketListing';
 import ChecklistNextFlightsView from '../screens/ChecklistNextFlights';
-import ProfitCalculatorView from '../screens/ProfitCalculator';
 import InfoExportationView from '../screens/InfoExportation';
 import ClientDetails from '../screens/ClientDetails';
 import { useAuth } from '../contexts/AuthContext';
+import RefundsRegisterView from '../screens/RefundsRegister';
+import RefundsListingView from '../screens/RefundsListing';
 
 // =================================================== MAIN STACK GROUP
 
@@ -58,20 +60,6 @@ function BaseStackGroup() {
           ),
         })}
       />
-      {/* <MainStackGroup.Screen
-        name="EditForm"
-        component={ClientDetailsEdit}
-      /> */}
-      {/* <MainStackGroup.Screen
-        name="Panic"
-        component={ClientPanicView}
-        options={{ title: "Botão de Pânico" }}
-      />
-      <MainStackGroup.Screen
-        name="Support"
-        component={ClientSupportView}
-        options={{ title: "Suporte" }}
-      /> */}
     </MainStackGroup.Navigator>
   );
 }
@@ -90,37 +78,27 @@ function ClientTabsGroup() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === 'HomeTab') {
-            iconName = focused ? 'home' : 'home-outline';
+          if (route.name === 'ConfigurationsTab') {
+            iconName = focused ? 'ios-settings' : 'settings-outline';
           } else if (route.name === 'ClientsTab') {
             iconName = focused ? 'ios-people' : 'people-outline';
           } else if (route.name === 'TicketsTab') {
             iconName = focused ? 'barcode' : 'barcode-outline';
-          } else if (route.name === 'ToolsTab') {
-            iconName = focused ? 'ios-settings' : 'settings-outline';
+          } else if (route.name === 'Refund') {
+            iconName = 'cash-refund';
           }
-          return <Ionicons name={iconName} size={size} color={color} />;
+
+          const iconComponent = route.name === 'Refund' ?
+            <MaterialCommunityIcons name={iconName} size={size} color={color} />
+            :
+            <Ionicons name={iconName} size={size} color={color} />;
+
+          return iconComponent;
         },
         tabBarActiveTintColor: '#ef7946',
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen
-        name="HomeTab"
-        component={HomeView}
-        options={{
-          title: 'Início',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 10 }}
-              onPress={() => navigation.openDrawer()}
-            >
-              <Ionicons name="md-menu" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        }}
-        screenOptions={{}}
-      />
       <Tab.Screen
         name="ClientsTab"
         component={ClientsTopTabs}
@@ -152,8 +130,24 @@ function ClientTabsGroup() {
         }}
       />
       <Tab.Screen
-        name="ToolsTab"
+        name="Refund"
         component={ToolsTopTabs}
+        options={{
+          title: 'Reembolsos',
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Ionicons name="md-menu" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="ConfigurationsTab"
+        component={InfoExportationView}
         options={{
           title: 'Ferramentas',
           headerLeft: () => (
@@ -165,6 +159,7 @@ function ClientTabsGroup() {
             </TouchableOpacity>
           ),
         }}
+        screenOptions={{}}
       />
     </Tab.Navigator>
   );
@@ -230,14 +225,14 @@ function TicketsTopTabs() {
         name="TicketsRegister"
         component={TicketsRegisterView}
         options={{
-          tabBarLabel: 'Registros de Bilhetes',
+          tabBarLabel: 'Detalhes de Bilhetes',
         }}
       />
       <TopTabs.Screen
         name="TicketsListing"
         component={TicketsListingView}
         options={{
-          tabBarLabel: 'Listagem de Bilhetes',
+          tabBarLabel: 'Bilhetes Consultados',
         }}
       />
     </TopTabs.Navigator>
@@ -262,17 +257,17 @@ function ToolsTopTabs() {
       }}
     >
       <TopTabs.Screen
-        name="ProfitCalculator"
-        component={ProfitCalculatorView}
+        name="RefundRegister"
+        component={RefundsRegisterView}
         options={{
-          tabBarLabel: 'Calculadora de Lucro',
+          tabBarLabel: 'Cadastro de Reembolso',
         }}
       />
       <TopTabs.Screen
-        name="InfoExportation"
-        component={InfoExportationView}
+        name="RefundListing"
+        component={RefundsListingView}
         options={{
-          tabBarLabel: 'Exportar Informação',
+          tabBarLabel: 'Listagem de Reembolsos',
         }}
       />
     </TopTabs.Navigator>
@@ -350,7 +345,7 @@ function DrawerClient() {
         name="TicketsRegister"
         component={TicketsRegisterView}
         options={({ navigation }) => ({
-          title: 'Registros de Bilhetes',
+          title: 'Detalhes de Bilhetes',
           headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
@@ -358,7 +353,7 @@ function DrawerClient() {
         name="TicketsListing"
         component={TicketsListingView}
         options={({ navigation }) => ({
-          title: 'Listagem de Bilhetes',
+          title: 'Bilhetes consultados',
           headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
@@ -371,10 +366,18 @@ function DrawerClient() {
         })}
       />
       <Drawer.Screen
-        name="ProfitCalculator"
-        component={ProfitCalculatorView}
+        name="RefundRegister"
+        component={RefundsRegisterView}
         options={({ navigation }) => ({
-          title: 'Calculadora de Lucro',
+          title: 'Cadastro de Reembolso',
+          headerLeft: () => <BackButton navigation={navigation} />,
+        })}
+      />
+      <Drawer.Screen
+        name="RefundListing"
+        component={RefundsListingView}
+        options={({ navigation }) => ({
+          title: 'Listagem de Reembolsos',
           headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
@@ -382,7 +385,7 @@ function DrawerClient() {
         name="InfoExportation"
         component={InfoExportationView}
         options={({ navigation }) => ({
-          title: 'Exportar Informação',
+          title: 'Exportar Informações',
           headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
