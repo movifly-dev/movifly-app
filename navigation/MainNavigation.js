@@ -316,6 +316,11 @@ function DrawerClient() {
           />
         </DrawerContentScrollView>
       )}
+      screenOptions={{
+        drawerActiveTintColor: '#ef7946',
+        drawerActiveBackgroundColor: 'rgba(239, 121, 70, 0.3)'
+
+      }}
     >
       <Drawer.Screen
         name="Home"
