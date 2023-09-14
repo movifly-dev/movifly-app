@@ -12,31 +12,28 @@ function TicketRegisterView() {
 
   const handleGetAccessToken = async () => {
     try {
-      const userId = 'VjE6Njl2MmNpOXEyazZzeTZ2dzpERVZDRU5URVI6RVhU';
-      const password = 'TEpKOWVwbTc=';
-
+      const userId = 'VjE6em0yMjRweTBrN29vZnY4bDpERVZDRU5URVI6RVhU';
+      const password = 'TndjSWJKMDQ=';
       const authHeader = encode(`${userId}:${password}`);
-      const baseUrl = 'https://api.havail.sabre.com/v2/auth/token';
 
+      const baseUrl = 'https://api.cert.platform.sabre.com/v2/auth/token';
       const data = {
         grant_type: 'client_credentials',
       };
-
       const config = {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: `Basic ${authHeader}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
       };
       const response = await axios.post(baseUrl, new URLSearchParams(data).toString(), config);
       setAccessToken(response.data.access_token);
-      return response.data.access_token;
     } catch (error) {
       console.error('Error getting access token:', error.message);
       if (error.response) {
         console.error('Response Data:', error.response.data);
       }
-      Alert.alert('Failed to retrieve the access token. Please check your credentials.');
+      Alert.alert('Falha ao acessar token, tente novamente em instantes');
     }
   };
 
@@ -58,23 +55,21 @@ function TicketRegisterView() {
       if (!accessToken) {
         await handleGetAccessToken();
         if (!accessToken) {
-          Alert.alert('accessToken NONE', accessToken);
           return;
         }
       }
-      Alert.alert('accessToken', accessToken);
-
-      const baseUrl = 'api.cert.platform.sabre.com/v1/trip/orders';
-
+      
+      const baseUrl = 'https://developer.sabre.com/v4.3/pnr';
       const response = await axios.get(`${baseUrl}/getBooking`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${accessToken}`,
+        // },
         params: {
-          surname: lastName,
-          confirmationId: pnrCode,
+          lastName: 'Smith',
+          pnr: 'LVBIEL',
         },
       });
+      console.log('RESPOSE::', response);
       setFlightDetails(response.data);
     } catch (error) {
       Alert.alert('Erro ao buscar detalhes da reserva. Verifique suas informações.');
