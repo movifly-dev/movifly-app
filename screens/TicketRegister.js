@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { SafeAreaView, ScrollView, View, Text, TextInput, Button } from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, TextInput, Button, Alert } from 'react-native';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { encode } from 'base-64';
@@ -36,7 +36,7 @@ function TicketRegisterView() {
       if (error.response) {
         console.error('Response Data:', error.response.data);
       }
-      alert('Failed to retrieve the access token. Please check your credentials.');
+      Alert.alert('Failed to retrieve the access token. Please check your credentials.');
     }
   };
 
@@ -51,18 +51,18 @@ function TicketRegisterView() {
   const handleLinkReservation = async () => {
     try {
       if (!lastName || !pnrCode) {
-        alert('Por favor, preencha todos os campos.');
+        Alert.alert('Por favor, preencha todos os campos.');
         return;
       }
 
       if (!accessToken) {
         await handleGetAccessToken();
         if (!accessToken) {
-          alert('accessToken NONE', accessToken);
+          Alert.alert('accessToken NONE', accessToken);
           return;
         }
       }
-      alert('accessToken', accessToken);
+      Alert.alert('accessToken', accessToken);
 
       const baseUrl = 'api.cert.platform.sabre.com/v1/trip/orders';
 
@@ -77,7 +77,7 @@ function TicketRegisterView() {
       });
       setFlightDetails(response.data);
     } catch (error) {
-      alert('Erro ao buscar detalhes da reserva. Verifique suas informações.');
+      Alert.alert('Erro ao buscar detalhes da reserva. Verifique suas informações.');
     }
   };
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { FIRESTORE_DB } from '../firebaseConfig';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useMain } from '../contexts/MainContext';
@@ -81,7 +81,7 @@ function ClientRegisterView() {
       // Use the add() method to add a new document with the newClientData to the "clientes" collection
       await addDoc(clientesCollectionRef, newClientData);
 
-      alert('Data submitted successfully!');
+      Alert.alert('Data submitted successfully!');
       fetchClients();
       setDataVooSelected(false);
       setDataVendaSelected(false);
@@ -102,7 +102,7 @@ function ClientRegisterView() {
       setEmailCliente('');
       setCpf('');
     } catch (error) {
-      alert(error.message);
+      Alert.alert(error.message);
       throw new Error('Failed to submit data. Please try again later.');
     }
   };

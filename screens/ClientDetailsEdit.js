@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity, Alert } from 'react-native';
 import { FIRESTORE_DB } from '../firebaseConfig';
 import { updateDoc, collection, doc } from 'firebase/firestore';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -144,10 +144,10 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
       // Use the updateDoc() method to update the existing document with the updatedClientData
       await updateDoc(documentRef, updatedClientData);
       await fetchClients();
-      alert('Data updated successfully!');
+      Alert.alert('Data updated successfully!');
       closeModal(); // Close the modal after successful update
     } catch (error) {
-      alert('Failed to update data. Please try again later.');
+      Alert.alert('Failed to update data. Please try again later.');
       console.error('Error updating client:', error);
     }
   };

@@ -12,6 +12,7 @@ const MainContext = createContext();
 
 function MainProvider({ children }) {
   const [clients, setClients] = useState([]);
+  const [refunds, setRefunds] = useState([]);
 
   const fetchClients = async () => {
     try {
@@ -26,13 +27,27 @@ function MainProvider({ children }) {
     }
   };
 
+  const fetchRefunds = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'reembolsos'));
+      const refundsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setRefunds(refundsData);
+    } catch (error) {
+      throw new Error('Erro ao listar reembolsos');
+    }
+  };
+
   useEffect(() => {
     fetchClients();
+    fetchRefunds();
   }, []);
 
   // ===============================================================
 
-  const mainContextValues = useMemo(() => ({ clients, fetchClients }), [clients]);
+  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds }), [clients, refunds]);
 
   return (
     <MainContext.Provider value={mainContextValues}>

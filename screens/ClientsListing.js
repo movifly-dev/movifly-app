@@ -122,7 +122,7 @@ function ClientsListingView() {
           </View>
 
           <View style={{marginBottom: 16}}>
-            <Text style={{marginBottom: 8}}>Data do Final:</Text>
+            <Text style={{marginBottom: 8}}>Data Final:</Text>
             <Button
               title={endDateSelected ? endDateFilter === '' ? 'Selecionar Data' : formatDateToString(endDateFilter) : 'Selecionar Data'}
               onPress={() => setShowEndDateFilterPicker(true)}
@@ -156,7 +156,7 @@ function ClientsListingView() {
               <Text style={styles.clientInfoLabel}>Localizador:</Text>
               <Text style={styles.clientInfoValue}>{client.localizador}</Text>
 
-              <Text style={styles.clientInfoLabel}>Companhia:</Text>
+              <Text style={styles.clientInfoLabel}>Companhia Aérea:</Text>
               <Text style={styles.clientInfoValue}>{client.companhiaAerea}</Text>
 
               <Text style={styles.clientInfoLabel}>Data do Voo:</Text>

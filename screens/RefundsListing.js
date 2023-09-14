@@ -13,7 +13,9 @@ function RefundsListingView() {
   const [numClientsToLoad, setNumClientsToLoad] = useState(10);
   const [nameFilter, setNameFilter] = useState('');
   const navigation = useNavigation();
-  const { clients, fetchClients } = useMain();
+  const { refunds, fetchRefunds } = useMain();
+
+  const [filtersActive, setFiltersActive] = useState(false);
 
   const [startDateFilter, setStartDateFilter] = useState(new Date());
   const [endDateFilter, setEndDateFilter] = useState(new Date());
@@ -23,13 +25,31 @@ function RefundsListingView() {
   const [endDateSelected, setEndDateSelected] = useState(false);
 
   useEffect(() => {
-    fetchClients();
+    fetchRefunds();
   }, []);
+
+  useEffect(() => {
+    // Check if any filter is active and set filtersActive state accordingly
+    if (startDateSelected || endDateSelected || nameFilter) {
+      setFiltersActive(true);
+    } else {
+      setFiltersActive(false);
+    }
+  }, [startDateSelected, endDateSelected, nameFilter]);
+
+  const clearFilters = () => {
+    setStartDateSelected(false);
+    setEndDateSelected(false);
+    setNameFilter('');
+    setFiltersActive(false);
+    setStartDateFilter(new Date());
+    setEndDateFilter(new Date());
+  };
 
   const handleLoadMore = () => {
     setNumClientsToLoad((prevNumClientsToLoad) => prevNumClientsToLoad + 5);
   };
-  const handleDataVooStartChange = (event, selectedDate) => {
+  const handleDataRequestRefundStartChange = (event, selectedDate) => {
     setShowStartDateFilterPicker(false);
     setStartDateSelected(true);
     if (selectedDate) {
@@ -37,7 +57,7 @@ function RefundsListingView() {
     }
   };
 
-  const handleDataVooEndChange = (event, selectedDate) => {
+  const handleDataRequestRefundEndChange = (event, selectedDate) => {
     setShowEndDateFilterPicker(false);
     setEndDateSelected(true);
     if (selectedDate) {
@@ -45,21 +65,21 @@ function RefundsListingView() {
     }
   };
 
-  const filterClients = () => {
-    const filteredClients = clients.filter((client) => {
+  const filterRefunds = () => {
+    const filteredRefunds = refunds.filter((refund) => {
       // Filter by name
-      const nameMatch = client.nomePassageiro.toLowerCase().includes(nameFilter.toLowerCase());
+      const nameMatch = refund.nomeCliente.toLowerCase().includes(nameFilter.toLowerCase());
 
       // Filter by start date
-      const startDateMatch = !startDateSelected || !startDateFilter || client.dataVoo && formatStringToDate(client.dataVoo) >= startDateFilter;
+      const startDateMatch = !startDateSelected || !startDateFilter || refund.requestRefundData && formatStringToDate(refund.requestRefundData) >= startDateFilter;
 
       // Filter by end date
-      const endDateMatch = !endDateSelected || !endDateFilter || client.dataVoo && formatStringToDate(client.dataVoo) <= endDateFilter;
+      const endDateMatch = !endDateSelected || !endDateFilter || refund.requestRefundData && formatStringToDate(refund.requestRefundData) <= endDateFilter;
 
       return nameMatch && startDateMatch && endDateMatch;
     });
 
-    return filteredClients.slice(0, numClientsToLoad);
+    return filteredRefunds.slice(0, numClientsToLoad);
   };
 
   return (
@@ -84,7 +104,7 @@ function RefundsListingView() {
             onChangeText={(text) => setNameFilter(text)}
           />
 
-          <View style={{marginBottom: 16}}>
+          <View style={{marginBottom: 10}}>
             <Text style={{marginBottom: 8}}>Data Inicial:</Text>
             <Button
               title={startDateSelected ? startDateFilter === '' ? 'Selecionar Data' : formatDateToString(startDateFilter) : 'Selecionar Data'}
@@ -96,13 +116,13 @@ function RefundsListingView() {
                 value={typeof startDateFilter === 'object' ? startDateFilter : formatStringToDate(startDateFilter)}
                 mode="date"
                 display="calendar"
-                onChange={handleDataVooStartChange}
+                onChange={handleDataRequestRefundStartChange}
               />
             )}
           </View>
 
           <View style={{marginBottom: 16}}>
-            <Text style={{marginBottom: 8}}>Data do Final:</Text>
+            <Text style={{marginBottom: 8}}>Data Final:</Text>
             <Button
               title={endDateSelected ? endDateFilter === '' ? 'Selecionar Data' : formatDateToString(endDateFilter) : 'Selecionar Data'}
               onPress={() => setShowEndDateFilterPicker(true)}
@@ -113,29 +133,35 @@ function RefundsListingView() {
                 value={typeof endDateFilter === 'object' ? endDateFilter : formatStringToDate(endDateFilter)}
                 mode="date"
                 display="calendar"
-                onChange={handleDataVooEndChange}
+                onChange={handleDataRequestRefundEndChange}
               />
             )}
           </View>
 
-          {filterClients().map((client) => (
-            <TouchableOpacity
+          {filtersActive && (
+            <View style={styles.filterContainer}>
+              <Button title="Limpar Filtros" onPress={clearFilters} />
+            </View>
+          )}
+
+          {filterRefunds().map((client) => (
+            <View
               key={client.id}
               style={styles.clientItem}
-              onPress={() => navigation.navigate('ClientDetails', { client })}
+              // onPress={() => navigation.navigate('ClientDetails', { client })}
             >
-              <Text style={styles.clientInfoLabel}>Nome do Passageiro:</Text>
-              <Text style={styles.clientInfoValue}>{client.nomePassageiro}</Text>
+              <Text style={styles.clientInfoLabel}>Nome do Cliente:</Text>
+              <Text style={styles.clientInfoValue}>{client.nomeCliente}</Text>
 
               <Text style={styles.clientInfoLabel}>Localizador:</Text>
               <Text style={styles.clientInfoValue}>{client.localizador}</Text>
 
-              <Text style={styles.clientInfoLabel}>Companhia:</Text>
+              <Text style={styles.clientInfoLabel}>Companhia Aérea:</Text>
               <Text style={styles.clientInfoValue}>{client.companhiaAerea}</Text>
 
-              <Text style={styles.clientInfoLabel}>Data do Voo:</Text>
-              <Text style={styles.clientInfoValue}>{client.dataVoo}</Text>
-            </TouchableOpacity>
+              <Text style={styles.clientInfoLabel}>Data da Solicitação:</Text>
+              <Text style={styles.clientInfoValue}>{client.requestRefundData}</Text>
+            </View>
           ))}
         </View>
       </ScrollView>
@@ -193,4 +219,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
+  filterContainer: {
+    marginTop: 8,
+    marginBottom: 16
+  }
 });
