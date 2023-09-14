@@ -1,18 +1,26 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet, TextInput, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useMain } from '../contexts/MainContext';
+import DateTimePickerModal from '@react-native-community/datetimepicker';
 import { TextInputMask } from 'react-native-masked-text'; // Import TextInputMask
+import formatDateToString from '../utils/formatDateToString';
+import formatStringToDate from '../utils/formatStringToDate';
 
 function ClientsListingView() {
   const [numClientsToLoad, setNumClientsToLoad] = useState(10);
   const [nameFilter, setNameFilter] = useState('');
-  const [startDateFilter, setStartDateFilter] = useState('');
-  const [endDateFilter, setEndDateFilter] = useState('');
   const navigation = useNavigation();
   const { clients, fetchClients } = useMain();
+
+  const [startDateFilter, setStartDateFilter] = useState(new Date());
+  const [endDateFilter, setEndDateFilter] = useState(new Date());
+  const [showStartDateFilterPicker, setShowStartDateFilterPicker] = useState(false);
+  const [showEndDateFilterPicker, setShowEndDateFilterPicker] = useState(false);
+  const [startDateSelected, setStartDateSelected] = useState(false);
+  const [endDateSelected, setEndDateSelected] = useState(false);
 
   useEffect(() => {
     fetchClients();
@@ -21,6 +29,23 @@ function ClientsListingView() {
   const handleLoadMore = () => {
     setNumClientsToLoad((prevNumClientsToLoad) => prevNumClientsToLoad + 5);
   };
+  console.log('startDateFilter', startDateFilter);
+  console.log('endDateFilter', endDateFilter);
+  const handleDataVooStartChange = (event, selectedDate) => {
+    setShowStartDateFilterPicker(false);
+    setStartDateSelected(true);
+    if (selectedDate) {
+      setStartDateFilter(selectedDate);
+    }
+  };
+
+  const handleDataVooEndChange = (event, selectedDate) => {
+    setShowEndDateFilterPicker(false);
+    setEndDateSelected(true);
+    if (selectedDate) {
+      setEndDateFilter(selectedDate);
+    }
+  };
 
   const filterClients = () => {
     const filteredClients = clients.filter((client) => {
@@ -28,10 +53,10 @@ function ClientsListingView() {
       const nameMatch = client.nomePassageiro.toLowerCase().includes(nameFilter.toLowerCase());
 
       // Filter by start date
-      const startDateMatch = !startDateFilter || client.dataVoo >= startDateFilter;
+      const startDateMatch = !startDateSelected || !startDateFilter || client.dataVoo && formatStringToDate(client.dataVoo) >= startDateFilter;
 
       // Filter by end date
-      const endDateMatch = !endDateFilter || client.dataVoo <= endDateFilter;
+      const endDateMatch = !endDateSelected || !endDateFilter || client.dataVoo && formatStringToDate(client.dataVoo) <= endDateFilter;
 
       return nameMatch && startDateMatch && endDateMatch;
     });
@@ -61,29 +86,39 @@ function ClientsListingView() {
             onChangeText={(text) => setNameFilter(text)}
           />
 
-          {/* Filter input for Data do Voo (Start Date) with masking */}
-          <TextInputMask
-            style={styles.filterInput}
-            type={'datetime'}
-            options={{
-              format: 'DD/MM/YYYY',
-            }}
-            value={startDateFilter}
-            onChangeText={(formatted, extracted) => setStartDateFilter(formatted)}
-            placeholder="Filtrar por Data do Voo (Data Inicial)"
-          />
+          <View style={{marginBottom: 16}}>
+            <Text style={{marginBottom: 8}}>Data Inicial:</Text>
+            <Button
+              title={startDateSelected ? startDateFilter === '' ? 'Selecionar Data' : formatDateToString(startDateFilter) : 'Selecionar Data'}
+              onPress={() => setShowStartDateFilterPicker(true)}
+              color="#ef7946"
+            />
+            {showStartDateFilterPicker && (
+              <DateTimePickerModal
+                value={typeof startDateFilter === 'object' ? startDateFilter : formatStringToDate(startDateFilter)}
+                mode="date"
+                display="calendar"
+                onChange={handleDataVooStartChange}
+              />
+            )}
+          </View>
 
-          {/* Filter input for Data do Voo (End Date) with masking */}
-          <TextInputMask
-            style={styles.filterInput}
-            type={'datetime'}
-            options={{
-              format: 'DD/MM/YYYY',
-            }}
-            value={endDateFilter}
-            onChangeText={(formatted, extracted) => setEndDateFilter(formatted)}
-            placeholder="Filtrar por Data do Voo (Data Final)"
-          />
+          <View style={{marginBottom: 16}}>
+            <Text style={{marginBottom: 8}}>Data do Final:</Text>
+            <Button
+              title={endDateSelected ? endDateFilter === '' ? 'Selecionar Data' : formatDateToString(endDateFilter) : 'Selecionar Data'}
+              onPress={() => setShowEndDateFilterPicker(true)}
+              color="#ef7946"
+            />
+            {showEndDateFilterPicker && (
+              <DateTimePickerModal
+                value={typeof endDateFilter === 'object' ? endDateFilter : formatStringToDate(endDateFilter)}
+                mode="date"
+                display="calendar"
+                onChange={handleDataVooEndChange}
+              />
+            )}
+          </View>
 
           {filterClients().map((client) => (
             <TouchableOpacity
