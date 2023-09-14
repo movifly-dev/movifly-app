@@ -1,13 +1,17 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet, TextInput, Button } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet, TextInput, Button, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useMain } from '../contexts/MainContext';
 import DateTimePickerModal from '@react-native-community/datetimepicker';
 import { TextInputMask } from 'react-native-masked-text'; // Import TextInputMask
 import formatDateToString from '../utils/formatDateToString';
 import formatStringToDate from '../utils/formatStringToDate';
+import DeleteConfirmationModal from '../components/Sells/DeleteConfirmationModal';
+import { FIRESTORE_DB } from '../firebaseConfig';
+import { MaterialIcons } from '@expo/vector-icons';
+import { collection, deleteDoc, doc } from 'firebase/firestore';
 
 function RefundsListingView() {
   const [numClientsToLoad, setNumClientsToLoad] = useState(10);
@@ -15,6 +19,7 @@ function RefundsListingView() {
   const navigation = useNavigation();
   const { refunds, fetchRefunds } = useMain();
 
+  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
   const [filtersActive, setFiltersActive] = useState(false);
 
   const [startDateFilter, setStartDateFilter] = useState(new Date());
@@ -80,6 +85,29 @@ function RefundsListingView() {
     });
 
     return filteredRefunds.slice(0, numClientsToLoad);
+  };
+
+  const toggleModalDelete = () => {
+    setIsModalDeleteVisible((prev) => !prev);
+  };
+
+  const handleRefundDelete = async (clientId) => {
+    console.log('clientID', clientId);
+    try {
+      // Delete the client document from Firestore
+      const refundsCollectionRef = collection(FIRESTORE_DB, 'reembolsos');
+      const documentRef = doc(refundsCollectionRef, clientId);
+      await deleteDoc(documentRef);
+      await fetchRefunds();
+      toggleModalDelete();
+
+      // Show a success message to the user (you can use a Toast or an alert)
+      // ...
+    } catch (error) {
+      throw new Error('Error deleting refund:', error);
+      // Show an error message to the user (you can use a Toast or an alert)
+      // ...
+    }
   };
 
   return (
@@ -150,17 +178,33 @@ function RefundsListingView() {
               style={styles.clientItem}
               // onPress={() => navigation.navigate('ClientDetails', { client })}
             >
-              <Text style={styles.clientInfoLabel}>Nome do Cliente:</Text>
-              <Text style={styles.clientInfoValue}>{client.nomeCliente}</Text>
 
-              <Text style={styles.clientInfoLabel}>Localizador:</Text>
-              <Text style={styles.clientInfoValue}>{client.localizador}</Text>
+              <View style={{flex: 0.9}}>
+                <Text style={styles.clientInfoLabel}>Nome do Cliente:</Text>
+                <Text style={styles.clientInfoValue}>{client.nomeCliente}</Text>
 
-              <Text style={styles.clientInfoLabel}>Companhia Aérea:</Text>
-              <Text style={styles.clientInfoValue}>{client.companhiaAerea}</Text>
+                <Text style={styles.clientInfoLabel}>Localizador:</Text>
+                <Text style={styles.clientInfoValue}>{client.localizador}</Text>
 
-              <Text style={styles.clientInfoLabel}>Data da Solicitação:</Text>
-              <Text style={styles.clientInfoValue}>{client.requestRefundData}</Text>
+                <Text style={styles.clientInfoLabel}>Companhia Aérea:</Text>
+                <Text style={styles.clientInfoValue}>{client.companhiaAerea}</Text>
+
+                <Text style={styles.clientInfoLabel}>Data da Solicitação:</Text>
+                <Text style={styles.clientInfoValue}>{client.requestRefundData}</Text>
+              </View>
+
+              {/* Delete button */}
+              <View style={{flex: 0.1}}>
+                <TouchableOpacity onPress={toggleModalDelete} style={styles.touchableSpace}>
+                  <MaterialIcons name="delete" size={26} color="white" />
+                </TouchableOpacity>
+              </View>
+
+              <DeleteConfirmationModal
+                isVisible={isModalDeleteVisible}
+                onCancel={toggleModalDelete}
+                onConfirm={() => handleRefundDelete(client.id)}
+              />
             </View>
           ))}
         </View>
@@ -193,6 +237,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    display: 'flex',
+    flexDirection: 'row'
   },
   clientInfo: {
     flexDirection: 'row',
@@ -222,5 +268,11 @@ const styles = StyleSheet.create({
   filterContainer: {
     marginTop: 8,
     marginBottom: 16
-  }
+  },
+  touchableSpace: {
+    backgroundColor: 'rgba(200, 200, 200, 0.3)',
+    padding: 8,
+    borderRadius: 50,
+    width: 42,
+  },
 });
