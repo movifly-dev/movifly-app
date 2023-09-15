@@ -12,7 +12,6 @@
 //       client_id: clientId,
 //       client_secret: clientSecret,
 //     });
-//     console.log('RESPONSE', response);
 //     const accessToken = response.data.access_token;
 //     return accessToken;
 //   } catch (error) {
