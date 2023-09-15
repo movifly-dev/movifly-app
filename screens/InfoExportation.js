@@ -61,23 +61,12 @@ function ExcelExportView() {
     try {
       await FileSystem.writeAsStringAsync(fileUri, wbout, { encoding: FileSystem.EncodingType.Base64 });
 
-      // Now you have the Excel file at 'fileUri', you can use it as needed.
-      // For example, you can share the file using the 'expo-sharing' package or trigger a download.
-
       if (Platform.OS === 'android') {
-        // Trigger a download on Android
         const downloadUrl = fileUri;
         Sharing.shareAsync(downloadUrl);
       } else if (Platform.OS === 'ios') {
-        // Open the file in Safari on iOS
         const fileURL = `file://${fileUri}`;
-        Linking.openURL(fileURL)
-          .then(() => {
-            console.log('File opened successfully in Safari.');
-          })
-          .catch((error) => {
-            console.log('Error opening file:', error);
-          });
+        await Linking.openURL(fileURL);
       }
     } catch (error) {
       throw new Error('Error creating Excel file:' + error);

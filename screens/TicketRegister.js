@@ -58,12 +58,12 @@ function TicketRegisterView() {
           return;
         }
       }
-      
+
       const baseUrl = 'https://developer.sabre.com/v4.3/pnr';
       const response = await axios.get(`${baseUrl}/getBooking`, {
-        // headers: {
-        //   Authorization: `Bearer ${accessToken}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
         params: {
           lastName: 'Smith',
           pnr: 'LVBIEL',
