@@ -2,7 +2,7 @@
   "expo": {
     "name": "movifly-app",
     "slug": "movifly-app",
-    "version": "1.0.0",
+    "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,16 +18,23 @@
       "supportsTablet": true,
       "infoPlist": {
         "a": "This app uses the camera to scan barcodes on event tickets."
-      }
+      },
+      "bundleIdentifier": "com.moviflydev.moviflyapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.moviflydev.moviflyapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f4d97a00-9bc5-4031-89bd-0096e2c00f78"
+      }
     }
   }
 }

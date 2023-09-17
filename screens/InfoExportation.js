@@ -15,6 +15,7 @@ function ExcelExportView() {
     }
 
     const csvHeader = [
+      'DataVoo',
       'DataVenda',
       'CompanhiaAerea',
       'Localizador',
@@ -32,6 +33,7 @@ function ExcelExportView() {
     ];
 
     const csvData = clients.map(client => [
+      client.dataVoo,
       client.dataVenda,
       client.companhiaAerea,
       client.localizador,

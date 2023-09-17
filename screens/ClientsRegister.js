@@ -29,10 +29,22 @@ function ClientRegisterView() {
   const [emailCliente, setEmailCliente] = useState('');
   const [cpf, setCpf] = useState('');
   const [checklistPagoChecked, setChecklistPagoChecked] = useState('Não');
-  // const [checklistReembolsado, setChecklistReembolsado] = useState('Não Solicitado');
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
-  // const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
+
+  const companhiasAereas = [
+    'LATAM',
+    'GOL',
+    'AZUL',
+    'TAP',
+    'IBÉRIA',
+    'AIRFRANCE',
+    'KLM',
+    'AMERICA AIRLINES',
+    'DELTA',
+    'EMIRATES',
+    'OUTRAS'
+  ];
 
   // useEffect(() => {
   // const requiredFields = [
@@ -70,7 +82,6 @@ function ClientRegisterView() {
         lucro,
         formaPagamento,
         checklistPagoChecked,
-        // checklistReembolsado,
         emailCliente,
         cpf,
         createdAt: serverTimestamp(),
@@ -199,13 +210,31 @@ function ClientRegisterView() {
               />
             )}
           </View>
+
           <Text style={styles.label}>Companhia Aérea:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setCompanhiaAerea}
-            value={companhiaAerea}
-            placeholder="Digite a companhia aérea"
-          />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={companhiaAerea}
+              onValueChange={(itemValue) => setCompanhiaAerea(itemValue)}
+              style={styles.picker}
+            >
+              {
+                companhiasAereas.map((companhia) => (
+                  <Picker.Item key={companhia} label={companhia} value={companhia} />
+                ))
+              }
+            </Picker>
+
+            {/* Conditionally render TextInput for "OUTRAS" option */}
+            {companhiaAerea === 'OUTRAS' && (
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setCompanhiaAerea(text)}
+                value={companhiaAerea}
+                placeholder="Digite a companhia aérea"
+              />
+            )}
+          </View>
 
           <Text style={styles.label}>Localizador:</Text>
           <TextInput
