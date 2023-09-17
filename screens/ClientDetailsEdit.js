@@ -160,11 +160,11 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
       // Use the updateDoc() method to update the existing document with the updatedClientData
       await updateDoc(documentRef, updatedClientData);
       await fetchClients();
-      Alert.alert('Data updated successfully!');
+      Alert.alert('Informações atualizadas com sucesso!');
       closeModal(); // Close the modal after successful update
     } catch (error) {
-      Alert.alert('Failed to update data. Please try again later.');
-      console.error('Error updating client:', error);
+      Alert.alert('Falha aos atualizar informações. Tente novamente em instantes.');
+      throw new Error('Error updating client:' + error);
     }
   };
 

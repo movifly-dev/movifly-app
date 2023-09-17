@@ -94,7 +94,7 @@ function ClientRegisterView() {
       // Use the add() method to add a new document with the newClientData to the "clientes" collection
       await addDoc(clientesCollectionRef, newClientData);
 
-      Alert.alert('Data submitted successfully!');
+      Alert.alert('Informações cadastradas com sucesso!');
       fetchClients();
       setDataVooSelected(false);
       setDataVendaSelected(false);
@@ -115,8 +115,8 @@ function ClientRegisterView() {
       setEmailCliente('');
       setCpf('');
     } catch (error) {
-      Alert.alert(error.message);
-      throw new Error('Failed to submit data. Please try again later.');
+      Alert.alert('Falha ao cadastrar informações. Tente novamente em instantes.');
+      throw new Error('Failed to submit data:' + error);
     }
   };
 

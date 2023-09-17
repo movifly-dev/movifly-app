@@ -7,7 +7,7 @@ const DeleteConfirmationModal = ({ isVisible, onCancel, onConfirm }) => {
     <Modal visible={isVisible} transparent animationType="fade">
       <View style={styles.container}>
         <View style={styles.modalContent}>
-          <Text style={styles.message}>Tem certeza que deseja deletar essa informação?</Text>
+          <Text style={styles.message}>Tem certeza que deseja deletar esses dados permanentemente?</Text>
           <View style={styles.buttonsContainer}>
             <TouchableOpacity onPress={onCancel} style={[styles.button, styles.cancelButton]}>
               <Text style={styles.buttonText}>Cancelar</Text>
