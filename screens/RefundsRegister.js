@@ -18,6 +18,7 @@ function RefundsRegisterView() {
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchRefunds } = useMain();
   const [textInputMode, setTextInputMode] = useState(false);
+  const [observation, setObservation] = useState('');
 
   const companhiasAereas = [
     'Nenhuma',
@@ -61,6 +62,7 @@ function RefundsRegisterView() {
         companhiaAerea,
         localizador,
         nomeCliente,
+        observation,
         createdAt: serverTimestamp(),
       };
       // Define the collection reference
@@ -76,6 +78,7 @@ function RefundsRegisterView() {
       setCompanhiaAerea('');
       setLocalizador('');
       setNomeCliente('');
+      setObservation('');
     } catch (error) {
       Alert.alert('Falha ao cadastrar informações. Tente novamente em instantes.');
       throw new Error('Failed to submit data:' + error);
@@ -161,6 +164,14 @@ function RefundsRegisterView() {
             onChangeText={setNomeCliente}
             value={nomeCliente}
             placeholder="Digite o nome do passageiro"
+          />
+
+          <Text style={styles.label}>Observação:</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setObservation}
+            value={observation}
+            placeholder="Digite uma informação detalhada"
           />
 
           <Button color="#ef7946" title="Cadastrar" onPress={handleSubmit} disabled={!isFormCompleted} />

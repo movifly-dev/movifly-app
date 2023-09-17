@@ -191,6 +191,9 @@ function RefundsListingView() {
 
                 <Text style={styles.clientInfoLabel}>Data da Solicitação:</Text>
                 <Text style={styles.clientInfoValue}>{refund.requestRefundData}</Text>
+
+                <Text style={styles.clientInfoLabel}>Observação:</Text>
+                <Text style={styles.clientInfoValue}>{refund.observation}</Text>
               </View>
 
               {/* Delete button */}
