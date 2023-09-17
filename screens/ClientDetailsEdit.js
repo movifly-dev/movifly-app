@@ -35,6 +35,8 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const [observation, setObservation] = useState(client.observation);
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
+  const cpfCnpj = client.cpf.replace(/\D/g, '');
+  const [maskCpfCnpjType, setMaskCpfCnpjType] = useState(cpfCnpj.length === 11 ? 'cpf' : cpfCnpj.length >= 14 ? 'cnpj' : 'cpf');
   // const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
   const companhiasAereas = [
     'Nenhuma',
@@ -195,6 +197,19 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const switchToPicker = () => {
     setTextInputMode(false); // Switch back to picker mode
     setCompanhiaAerea('Nenhuma');
+  };
+
+  const handleInputCpfCnpjChange = (text) => {
+    setCpf(text);
+
+    // Determine the mask type based on the length of the input
+    if (text.length === 11) {
+      setMaskCpfCnpjType('cpf');
+    } else if (text.length >= 14) {
+      setMaskCpfCnpjType('cnpj');
+    } else {
+      setMaskCpfCnpjType('cpf');
+    }
   };
 
   return (
@@ -388,13 +403,13 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
               placeholder="Digite o e-mail do cliente"
             />
 
-            <Text style={styles.label}>CPF:</Text>
+            <Text style={styles.label}>CPF/CNPJ:</Text>
             <TextInputMask
               style={styles.input}
-              type={'cpf'}
+              type={maskCpfCnpjType}
               value={cpf}
-              onChangeText={setCpf}
-              placeholder="Digite o CPF"
+              onChangeText={handleInputCpfCnpjChange}
+              placeholder="Digite o CPF/CNPJ"
             />
 
             <Text style={styles.label}>Observação:</Text>

@@ -12,7 +12,7 @@ function RefundsRegisterView() {
   const [dataSelected, setDataSelected] = useState(false);
   const [showDataPicker, setShowDataPicker] = useState(false);
   const [requestRefundData, setRequestRefundData] = useState(new Date());
-  const [companhiaAerea, setCompanhiaAerea] = useState('');
+  const [companhiaAerea, setCompanhiaAerea] = useState('Nenhuma');
   const [localizador, setLocalizador] = useState('');
   const [nomeCliente, setNomeCliente] = useState('');
   const [isFormCompleted, setIsFormCompleted] = useState(true);
@@ -75,7 +75,7 @@ function RefundsRegisterView() {
       fetchRefunds();
       setDataSelected(false);
       setRequestRefundData(new Date());
-      setCompanhiaAerea('');
+      setCompanhiaAerea('Nenhuma');
       setLocalizador('');
       setNomeCliente('');
       setObservation('');

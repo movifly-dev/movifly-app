@@ -16,7 +16,7 @@ function ClientRegisterView() {
   const [showDataVendaPicker, setShowDataVendaPicker] = useState(false);
   const [dataVoo, setDataVoo] = useState(new Date());
   const [dataVenda, setDataVenda] = useState(new Date());
-  const [companhiaAerea, setCompanhiaAerea] = useState('');
+  const [companhiaAerea, setCompanhiaAerea] = useState('Nenhuma');
   const [localizador, setLocalizador] = useState('');
   const [nomePassageiro, setNomePassageiro] = useState('');
   const [nomeComprador, setNomeComprador] = useState('');
@@ -33,6 +33,7 @@ function ClientRegisterView() {
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
   const [textInputMode, setTextInputMode] = useState(false);
+  const [maskCpfCnpjType, setMaskCpfCnpjType] = useState('cpf');
 
   const companhiasAereas = [
     'Nenhuma',
@@ -103,7 +104,7 @@ function ClientRegisterView() {
       setDataVendaSelected(false);
       setDataVoo(new Date());
       setDataVenda(new Date());
-      setCompanhiaAerea('');
+      setCompanhiaAerea('Nenhuma');
       setLocalizador('');
       setNomePassageiro('');
       setNomeComprador('');
@@ -195,6 +196,19 @@ function ClientRegisterView() {
   const switchToPicker = () => {
     setTextInputMode(false); // Switch back to picker mode
     setCompanhiaAerea('Nenhuma');
+  };
+
+  const handleInputCpfCnpjChange = (text) => {
+    setCpf(text);
+
+    // Determine the mask type based on the length of the input
+    if (text.length === 11) {
+      setMaskCpfCnpjType('cpf');
+    } else if (text.length >= 14) {
+      setMaskCpfCnpjType('cnpj');
+    } else {
+      setMaskCpfCnpjType('cpf');
+    }
   };
 
   return (
@@ -378,16 +392,14 @@ function ClientRegisterView() {
             placeholder="Digite o e-mail do cliente"
           />
 
-          <Text style={styles.label}>CPF:</Text>
-          {/* Use the TextInputMask component for the cpf input */}
+          <Text>CPF/CNPJ:</Text>
           <TextInputMask
             style={styles.input}
-            type={'cpf'}
+            type={maskCpfCnpjType}
             value={cpf}
-            onChangeText={setCpf}
-            placeholder="Digite o CPF"
+            onChangeText={handleInputCpfCnpjChange}
+            placeholder="Digite o CPF/CNPJ"
           />
-
           <Text style={styles.label}>Observação:</Text>
           <TextInput
             style={styles.input}
