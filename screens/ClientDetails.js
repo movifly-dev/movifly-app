@@ -35,6 +35,7 @@ function ClientDetails({ route }) {
     checklistPagoChecked: 'Checklist Pago',
     emailCliente: 'E-mail do Cliente',
     cpf: 'CPF',
+    observation: 'Observação'
   };
   const toggleModalEdit = () => {
     setIsModalEditVisible((prev) => !prev);

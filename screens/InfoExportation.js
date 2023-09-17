@@ -29,7 +29,8 @@ function ExcelExportView() {
       'FormaPagamento',
       'ChecklistPago',
       'EmailCliente',
-      'CPF'
+      'CPF',
+      'Observação'
     ];
 
     const csvData = clients.map(client => [
@@ -47,7 +48,8 @@ function ExcelExportView() {
       client.formaPagamento,
       client.checklistPagoChecked,
       client.emailCliente,
-      client.cpf
+      client.cpf,
+      client.observation
     ]);
     const data = [csvHeader, ...csvData];
     const ws = XLSX.utils.aoa_to_sheet(data);

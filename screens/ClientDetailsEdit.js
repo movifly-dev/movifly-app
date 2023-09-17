@@ -32,6 +32,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const [checklistPagoChecked, setChecklistPagoChecked] = useState(client.checklistPagoChecked);
   const [emailCliente, setEmailCliente] = useState(client.emailCliente);
   const [cpf, setCpf] = useState(client.cpf);
+  const [observation, setObservation] = useState(client.observation);
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
   // const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
@@ -151,6 +152,7 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
         checklistPagoChecked,
         emailCliente,
         cpf,
+        observation
       };
 
       // Define the collection reference
@@ -393,6 +395,14 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
               value={cpf}
               onChangeText={setCpf}
               placeholder="Digite o CPF"
+            />
+
+            <Text style={styles.label}>Observação:</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={setObservation}
+              value={observation}
+              placeholder="Digite uma informação detalhada"
             />
 
             <Button color="#ef7946" title="Salvar" onPress={handleSubmit} disabled={!isFormCompleted} />

@@ -28,6 +28,7 @@ function ClientRegisterView() {
   const [formaPagamento, setFormaPagamento] = useState('');
   const [emailCliente, setEmailCliente] = useState('');
   const [cpf, setCpf] = useState('');
+  const [observation, setObservation] = useState('');
   const [checklistPagoChecked, setChecklistPagoChecked] = useState('Não');
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
@@ -64,6 +65,7 @@ function ClientRegisterView() {
   //   formaPagamento,
   //   emailCliente,
   //   cpf,
+  //   observation
   // ];
   // const isFormCompleted = requiredFields.some((field) => field.trim() !== '') || checklistPagoChecked;
   // }, []);
@@ -86,6 +88,7 @@ function ClientRegisterView() {
         checklistPagoChecked,
         emailCliente,
         cpf,
+        observation,
         createdAt: serverTimestamp(),
       };
       // Define the collection reference
@@ -114,6 +117,7 @@ function ClientRegisterView() {
       // setChecklistReembolsado('nao_solicitado');
       setEmailCliente('');
       setCpf('');
+      setObservation('');
     } catch (error) {
       Alert.alert('Falha ao cadastrar informações. Tente novamente em instantes.');
       throw new Error('Failed to submit data:' + error);
@@ -382,6 +386,14 @@ function ClientRegisterView() {
             value={cpf}
             onChangeText={setCpf}
             placeholder="Digite o CPF"
+          />
+
+          <Text style={styles.label}>Observação:</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setObservation}
+            value={observation}
+            placeholder="Digite uma informação detalhada"
           />
 
           <Button color="#ef7946" title="Cadastrar" onPress={handleSubmit} disabled={!isFormCompleted} />
