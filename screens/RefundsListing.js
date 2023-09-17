@@ -91,11 +91,12 @@ function RefundsListingView() {
     setIsModalDeleteVisible((prev) => !prev);
   };
 
-  const handleRefundDelete = async (clientId) => {
+  const handleRefundDelete = async (refundId) => {
+    console.log('refundId:', refundId);
     try {
       // Delete the client document from Firestore
       const refundsCollectionRef = collection(FIRESTORE_DB, 'reembolsos');
-      const documentRef = doc(refundsCollectionRef, clientId);
+      const documentRef = doc(refundsCollectionRef, refundId);
       await deleteDoc(documentRef);
       await fetchRefunds();
       toggleModalDelete();
@@ -171,25 +172,25 @@ function RefundsListingView() {
             </View>
           )}
 
-          {filterRefunds().map((client) => (
+          {filterRefunds().map((refund) => (
             <View
-              key={client.id}
+              key={refund.id}
               style={styles.clientItem}
               // onPress={() => navigation.navigate('ClientDetails', { client })}
             >
 
               <View style={{flex: 0.9}}>
                 <Text style={styles.clientInfoLabel}>Nome do Cliente:</Text>
-                <Text style={styles.clientInfoValue}>{client.nomeCliente}</Text>
+                <Text style={styles.clientInfoValue}>{refund.nomeCliente}</Text>
 
                 <Text style={styles.clientInfoLabel}>Localizador:</Text>
-                <Text style={styles.clientInfoValue}>{client.localizador}</Text>
+                <Text style={styles.clientInfoValue}>{refund.localizador}</Text>
 
                 <Text style={styles.clientInfoLabel}>Companhia Aérea:</Text>
-                <Text style={styles.clientInfoValue}>{client.companhiaAerea}</Text>
+                <Text style={styles.clientInfoValue}>{refund.companhiaAerea}</Text>
 
                 <Text style={styles.clientInfoLabel}>Data da Solicitação:</Text>
-                <Text style={styles.clientInfoValue}>{client.requestRefundData}</Text>
+                <Text style={styles.clientInfoValue}>{refund.requestRefundData}</Text>
               </View>
 
               {/* Delete button */}
@@ -202,7 +203,7 @@ function RefundsListingView() {
               <DeleteConfirmationModal
                 isVisible={isModalDeleteVisible}
                 onCancel={toggleModalDelete}
-                onConfirm={() => handleRefundDelete(client.id)}
+                onConfirm={() => handleRefundDelete(refund.id)}
               />
             </View>
           ))}

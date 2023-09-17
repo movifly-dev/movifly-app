@@ -31,8 +31,10 @@ function ClientRegisterView() {
   const [checklistPagoChecked, setChecklistPagoChecked] = useState('Não');
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
+  const [textInputMode, setTextInputMode] = useState(false);
 
   const companhiasAereas = [
+    'Nenhuma',
     'LATAM',
     'GOL',
     'AZUL',
@@ -179,6 +181,18 @@ function ClientRegisterView() {
     }
   };
 
+  const handlePickerChange = (itemValue) => {
+    setCompanhiaAerea(itemValue);
+    if (itemValue === 'OUTRAS') {
+      setTextInputMode(true);
+    }
+  };
+
+  const switchToPicker = () => {
+    setTextInputMode(false); // Switch back to picker mode
+    setCompanhiaAerea('Nenhuma');
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -212,29 +226,32 @@ function ClientRegisterView() {
           </View>
 
           <Text style={styles.label}>Companhia Aérea:</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={companhiaAerea}
-              onValueChange={(itemValue) => setCompanhiaAerea(itemValue)}
-              style={styles.picker}
-            >
-              {
-                companhiasAereas.map((companhia) => (
+          {textInputMode ? (
+            <>
+              <View marginBottom={16}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(text) => setCompanhiaAerea(text)}
+                  value={companhiaAerea}
+                  placeholder="Digite a companhia aérea"
+                  marginBottom={4}
+                />
+                <Button title="Voltar para opções" onPress={switchToPicker} />
+              </View>
+            </>
+          ) : (
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={companhiaAerea}
+                onValueChange={handlePickerChange}
+                style={styles.picker}
+              >
+                {companhiasAereas.map((companhia) => (
                   <Picker.Item key={companhia} label={companhia} value={companhia} />
-                ))
-              }
-            </Picker>
-
-            {/* Conditionally render TextInput for "OUTRAS" option */}
-            {companhiaAerea === 'OUTRAS' && (
-              <TextInput
-                style={styles.input}
-                onChangeText={(text) => setCompanhiaAerea(text)}
-                value={companhiaAerea}
-                placeholder="Digite a companhia aérea"
-              />
-            )}
-          </View>
+                ))}
+              </Picker>
+            </View>
+          )}
 
           <Text style={styles.label}>Localizador:</Text>
           <TextInput

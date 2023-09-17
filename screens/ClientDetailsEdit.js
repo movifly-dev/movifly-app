@@ -35,6 +35,22 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
   const [isFormCompleted, setIsFormCompleted] = useState(true);
   const { fetchClients } = useMain();
   // const checklistOptions = ['Não Solicitado', 'Sim', 'Não'];
+  const companhiasAereas = [
+    'Nenhuma',
+    'LATAM',
+    'GOL',
+    'AZUL',
+    'TAP',
+    'IBÉRIA',
+    'AIRFRANCE',
+    'KLM',
+    'AMERICA AIRLINES',
+    'DELTA',
+    'EMIRATES',
+    'OUTRAS'
+  ];
+
+  const [textInputMode, setTextInputMode] = useState(companhiasAereas.includes(client.companhiaAerea) && client.companhiaAerea !== 'OUTRAS' ? false : true);
 
   // Helper function to convert a BRL currency string to a number
   const parseCurrencyValue = (currencyString) => {
@@ -166,6 +182,19 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
       setDataVenda(selectedDate);
     }
   };
+
+  const handlePickerChange = (itemValue) => {
+    setCompanhiaAerea(itemValue);
+    if (itemValue === 'OUTRAS') {
+      setTextInputMode(true);
+    }
+  };
+
+  const switchToPicker = () => {
+    setTextInputMode(false); // Switch back to picker mode
+    setCompanhiaAerea('Nenhuma');
+  };
+
   return (
     <Modal visible={isVisible} animationType="slide" onRequestClose={closeModal}>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -218,12 +247,32 @@ function ClientDetailsEdit({ isVisible, client, closeModal }) {
             </View>
 
             <Text style={styles.label}>Companhia Aérea:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setCompanhiaAerea}
-              value={companhiaAerea}
-              placeholder="Digite a companhia aérea"
-            />
+            {textInputMode ? (
+              <>
+                <View marginBottom={16}>
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={(text) => setCompanhiaAerea(text)}
+                    value={companhiaAerea}
+                    placeholder="Digite a companhia aérea"
+                    marginBottom={4}
+                  />
+                  <Button title="Voltar para opções" onPress={switchToPicker} />
+                </View>
+              </>
+            ) : (
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={companhiaAerea}
+                  onValueChange={handlePickerChange}
+                  style={styles.picker}
+                >
+                  {companhiasAereas.map((companhia) => (
+                    <Picker.Item key={companhia} label={companhia} value={companhia} />
+                  ))}
+                </Picker>
+              </View>
+            )}
 
             <Text style={styles.label}>Localizador:</Text>
             <TextInput
