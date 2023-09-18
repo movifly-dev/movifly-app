@@ -4,29 +4,43 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet } from 'react-native';
 import { useMain } from '../contexts/MainContext';
 import formatStringToDate from '../utils/formatStringToDate';
+import { Picker } from '@react-native-picker/picker';
 
 function ChecklistNextFlightsView() {
   const { clients } = useMain();
   const [nextFlights, setNextFlights] = useState([]);
+  const [daysUntilFlight, setDaysUntilFlight] = useState(5); // Default to 5 days
 
   useEffect(() => {
-    // Filter flights for the next 5 days based on DataVoo
+    // Filter flights based on the selected number of days until the flight
     const today = new Date();
-    const fiveDaysFromNow = new Date(today);
-    fiveDaysFromNow.setDate(today.getDate() + 5);
+    const selectedDaysFromNow = new Date(today);
+    selectedDaysFromNow.setDate(today.getDate() + daysUntilFlight);
     const nextFlightsData = clients.filter((client) => {
       if (!client.dataVoo) return;
       const flightDate = formatStringToDate(client.dataVoo);
-      return flightDate >= today && flightDate <= fiveDaysFromNow;
+      return flightDate >= today && flightDate <= selectedDaysFromNow;
     });
 
     setNextFlights(nextFlightsData);
-  }, [clients]);
+  }, [clients, daysUntilFlight]);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.nextFlightsView}>
+          <Text marginBottom={12}>Selecione os dias até o próximo voo:</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={daysUntilFlight}
+              onValueChange={(itemValue) => setDaysUntilFlight(itemValue)}>
+              <Picker.Item label="1 Dia" value={1} />
+              <Picker.Item label="2 Dias" value={2} />
+              <Picker.Item label="3 Dias" value={3} />
+              <Picker.Item label="4 Dias" value={4} />
+              <Picker.Item label="5 Dias" value={5} />
+            </Picker>
+          </View>
           {nextFlights.map((flight) => (
             <View key={flight.id} style={styles.flightItem}>
               <Text style={styles.flightInfoLabel}>Nome do Passageiro:</Text>
@@ -54,6 +68,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
   },
   nextFlightsView: {
     flex: 1,

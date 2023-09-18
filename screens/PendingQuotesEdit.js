@@ -186,7 +186,7 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
               style={styles.input}
               onChangeText={setAdultos}
               value={adultos}
-              placeholder="Digite a quantidade de adultos"
+              placeholder="De 12 ou + anos"
               keyboardType="numeric"
             />
 
@@ -195,7 +195,7 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
               style={styles.input}
               onChangeText={setCriancas}
               value={criancas}
-              placeholder="Digite a quantidade de crianças"
+              placeholder="De 2 a 11 anos"
               keyboardType="numeric"
             />
 
