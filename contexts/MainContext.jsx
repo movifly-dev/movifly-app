@@ -13,6 +13,7 @@ const MainContext = createContext();
 function MainProvider({ children }) {
   const [clients, setClients] = useState([]);
   const [refunds, setRefunds] = useState([]);
+  const [quotes, setQuotes] = useState([]);
 
   const fetchClients = async () => {
     try {
@@ -40,14 +41,28 @@ function MainProvider({ children }) {
     }
   };
 
+  const fetchQuotes = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'quotes'));
+      const quotesData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setQuotes(quotesData);
+    } catch (error) {
+      throw new Error('Erro ao listar cotações');
+    }
+  };
+
   useEffect(() => {
     fetchClients();
     fetchRefunds();
+    fetchQuotes();
   }, []);
 
   // ===============================================================
 
-  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds }), [clients, refunds]);
+  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds, fetchQuotes, quotes }), [clients, refunds, quotes]);
 
   return (
     <MainContext.Provider value={mainContextValues}>

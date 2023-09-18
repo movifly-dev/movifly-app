@@ -32,6 +32,9 @@ import ClientDetails from '../screens/ClientDetails';
 import { useAuth } from '../contexts/AuthContext';
 import RefundsRegisterView from '../screens/RefundsRegister';
 import RefundsListingView from '../screens/RefundsListing';
+import PendingQuotesRegisterView from '../screens/PendingQuotesRegister';
+import PendingQuotesListingView from '../screens/PendingQuotesListing';
+import PendingQuotesDetails from '../screens/PendingQuotesDetails';
 
 // =================================================== MAIN STACK GROUP
 
@@ -50,6 +53,21 @@ function BaseStackGroup() {
         component={ClientDetails}
         options={({ navigation }) => ({
           title: 'Detalhes da venda',
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginRight: 15 }}
+              onPress={() => navigation && navigation.goBack()}
+            >
+              <Ionicons name="arrow-back-outline" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <MainStackGroup.Screen
+        name="QuoteDetails"
+        component={PendingQuotesDetails}
+        options={({ navigation }) => ({
+          title: 'Detalhes da cotação',
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginRight: 15 }}
@@ -86,6 +104,8 @@ function ClientTabsGroup() {
             iconName = focused ? 'barcode' : 'barcode-outline';
           } else if (route.name === 'Refund') {
             iconName = 'cash-refund';
+          } else if (route.name === 'PendingQuotes') {
+            iconName = 'md-cash-outline';
           }
 
           const iconComponent = route.name === 'Refund' ?
@@ -131,9 +151,25 @@ function ClientTabsGroup() {
       />
       <Tab.Screen
         name="Refund"
-        component={ToolsTopTabs}
+        component={RefundsTopTabs}
         options={{
           title: 'Reembolsos',
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Ionicons name="md-menu" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="PendingQuotes"
+        component={PendingQuotes}
+        options={{
+          title: 'Cotações',
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginLeft: 10 }}
@@ -239,9 +275,9 @@ function TicketsTopTabs() {
   );
 }
 
-// ---------- TOOLS
+// ---------- REFUNDS
 
-function ToolsTopTabs() {
+function RefundsTopTabs() {
   return (
     <TopTabs.Navigator
       screenOptions={{
@@ -268,6 +304,39 @@ function ToolsTopTabs() {
         component={RefundsListingView}
         options={{
           tabBarLabel: 'Listagem de Reembolsos',
+        }}
+      />
+    </TopTabs.Navigator>
+  );
+}
+
+function PendingQuotes() {
+  return (
+    <TopTabs.Navigator
+      screenOptions={{
+        tabBarLabelStyle: {
+          textTransform: 'capitalize',
+          fontWeight: 'bold',
+        },
+        tabBarIndicatorStyle: {
+          height: 5,
+          borderRadius: 5,
+          backgroundColor: '#ef7946',
+        },
+      }}
+    >
+      <TopTabs.Screen
+        name="PendingQuotesRegister"
+        component={PendingQuotesRegisterView}
+        options={{
+          tabBarLabel: 'Cadastro de Cotações',
+        }}
+      />
+      <TopTabs.Screen
+        name="PendingQuotesListing"
+        component={PendingQuotesListingView}
+        options={{
+          tabBarLabel: 'Listagem de Cotações',
         }}
       />
     </TopTabs.Navigator>
@@ -382,6 +451,22 @@ function DrawerClient() {
         })}
       />
       <Drawer.Screen
+        name="PendingQuotesRegister"
+        component={PendingQuotesRegisterView}
+        options={({ navigation }) => ({
+          title: 'Cadastro de Cotações',
+          headerLeft: () => <BackButton navigation={navigation} />,
+        })}
+      />
+      <Drawer.Screen
+        name="PendingQuotesListing"
+        component={PendingQuotesListingView}
+        options={({ navigation }) => ({
+          title: 'Listagem de Cotações',
+          headerLeft: () => <BackButton navigation={navigation} />,
+        })}
+      />
+      <Drawer.Screen
         name="InfoExportation"
         component={InfoExportationView}
         options={({ navigation }) => ({
@@ -416,12 +501,3 @@ export function MainNavigation() {
     </NavigationContainer>
   );
 }
-
-// headerLeft: () => (
-//   <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.goBack()}>
-//     <Image
-//       source={require('../assets/icons/left.png')}
-//       style={{ width: 20, height: 20 }}
-//     />
-//   </TouchableOpacity>
-// ),
