@@ -69,7 +69,6 @@ function PendingQuotesRegisterView() {
         createdAt: serverTimestamp(),
       };
 
-      console.log('newQuoteData', newQuoteData);
       // Define the collection reference
       const queotesCollectionRef = collection(FIRESTORE_DB, 'quotes');
 

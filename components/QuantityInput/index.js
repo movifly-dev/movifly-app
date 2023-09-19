@@ -21,8 +21,6 @@ const QuantityInput = ({ label, initialValue, onChangeQuantity }) => {
     }
   };
 
-  console.log('initialValue', initialValue);
-
   return (
     <View style={styles.quantityContainer}>
       <Text style={styles.label}>{label}:</Text>
