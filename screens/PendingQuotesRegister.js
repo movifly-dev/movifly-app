@@ -10,6 +10,7 @@ import DateTimePickerModal from '@react-native-community/datetimepicker';
 import formatDateToString from '../utils/formatDateToString';
 
 import CityInput from '../components/CityInput'; // Import the CityInput component
+import QuantityInput from '../components/QuantityInput';
 
 function PendingQuotesRegisterView() {
   const [dataVooIdaSelected, setDataVooIdaSelected] = useState(false);
@@ -22,9 +23,9 @@ function PendingQuotesRegisterView() {
   const [contato, setContato] = useState('');
   const [origem, setOrigem] = useState('');
   const [destino, setDestino] = useState('');
-  const [adultos, setAdultos] = useState('');
-  const [criancas, setCriancas] = useState('');
-  const [bebes, setBebes] = useState('');
+  const [adultos, setAdultos] = useState(0);
+  const [criancas, setCriancas] = useState(0);
+  const [bebes, setBebes] = useState(0);
   const [flexibilidade, setFlexibilidade] = useState('Sim');
   const [observation, setObservation] = useState('');
   const [isFormCompleted, setIsFormCompleted] = useState(true);
@@ -60,13 +61,15 @@ function PendingQuotesRegisterView() {
         destino,
         dataVooIda: dataVooIdaSelected ? formatDateToString(dataVooIda) : '',
         dataVooVolta: dataVooVoltaSelected ? formatDateToString(dataVooVolta) : '',
-        adultos,
-        criancas,
-        bebes,
+        adultos: adultos.toString(),
+        criancas: criancas.toString(),
+        bebes: bebes.toString(),
         flexibilidade,
         observation,
         createdAt: serverTimestamp(),
       };
+
+      console.log('newQuoteData', newQuoteData);
       // Define the collection reference
       const queotesCollectionRef = collection(FIRESTORE_DB, 'quotes');
 
@@ -82,9 +85,9 @@ function PendingQuotesRegisterView() {
       setContato('');
       setOrigem('');
       setDestino('');
-      setAdultos('');
-      setCriancas('');
-      setBebes('');
+      setAdultos(0);
+      setCriancas(0);
+      setBebes(0);
       setFlexibilidade('Sim');
       setObservation('');
     } catch (error) {
@@ -177,32 +180,11 @@ function PendingQuotesRegisterView() {
             )}
           </View>
 
-          <Text style={styles.label}>Quantidade de adultos:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setAdultos}
-            value={adultos}
-            placeholder="De 12 ou + anos"
-            keyboardType="numeric"
-          />
+          <QuantityInput label="Quantidade de adultos (De 12 ou + anos)" initialValue={adultos} onChangeQuantity={setAdultos}/>
 
-          <Text style={styles.label}>Quantidade de Crianças:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setCriancas}
-            value={criancas}
-            placeholder="De 2 a 11 anos"
-            keyboardType="numeric"
-          />
+          <QuantityInput label="Quantidade de Crianças (De 2 a 11 anos)" initialValue={criancas} onChangeQuantity={setCriancas}/>
 
-          <Text style={styles.label}>Quantidade de bebês:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setBebes}
-            value={bebes}
-            placeholder="Digite a quantidade de bebês"
-            keyboardType="numeric"
-          />
+          <QuantityInput label="Quantidade de bebês" initialValue={bebes} onChangeQuantity={setBebes}/>
 
           <Text style={styles.label}>Flexibilidade:</Text>
           <View style={styles.pickerContainer}>

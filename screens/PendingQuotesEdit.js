@@ -10,6 +10,7 @@ import DateTimePickerModal from '@react-native-community/datetimepicker';
 import formatDateToString from '../utils/formatDateToString';
 import { MaterialIcons } from '@expo/vector-icons';
 import formatStringToDate from '../utils/formatStringToDate';
+import QuantityInput from '../components/QuantityInput';
 
 function EditQuoteView({ isVisible, quote, closeModal}) {
   const { fetchQuotes } = useMain();
@@ -24,9 +25,9 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
   const [contato, setContato] = useState(quote.contato);
   const [origem, setOrigem] = useState(quote.origem);
   const [destino, setDestino] = useState(quote.destino);
-  const [adultos, setAdultos] = useState(quote.adultos.toString());
-  const [criancas, setCriancas] = useState(quote.criancas.toString());
-  const [bebes, setBebes] = useState(quote.bebes.toString());
+  const [adultos, setAdultos] = useState(Number(quote.adultos) || 0);
+  const [criancas, setCriancas] = useState(Number(quote.criancas) || 0);
+  const [bebes, setBebes] = useState(Number(quote.bebes) || 0);
   const [flexibilidade, setFlexibilidade] = useState(quote.flexibilidade);
   const [observation, setObservation] = useState(quote.observation);
   const [isFormCompleted, setIsFormCompleted] = useState(true);
@@ -55,9 +56,9 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
         destino,
         dataVooIda: dataVooIdaSelected ? typeof dataVooIda === 'object' ? formatDateToString(dataVooIda) : dataVooIda : '',
         dataVooVolta: dataVooVoltaSelected ? typeof dataVooVolta === 'object' ? formatDateToString(dataVooVolta) : dataVooVolta : '',
-        adultos,
-        criancas,
-        bebes,
+        adultos: adultos.toString(),
+        criancas: criancas.toString(),
+        bebes: bebes.toString(),
         flexibilidade,
         observation,
       };
@@ -181,32 +182,11 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
               )}
             </View>
 
-            <Text style={styles.label}>Quantidade de adultos:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setAdultos}
-              value={adultos}
-              placeholder="De 12 ou + anos"
-              keyboardType="numeric"
-            />
+            <QuantityInput label="Quantidade de adultos (De 12 ou + anos)" initialValue={adultos} />
 
-            <Text style={styles.label}>Quantidade de Crianças:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setCriancas}
-              value={criancas}
-              placeholder="De 2 a 11 anos"
-              keyboardType="numeric"
-            />
+            <QuantityInput label="Quantidade de Crianças (De 2 a 11 anos)" initialValue={criancas} />
 
-            <Text style={styles.label}>Quantidade de bebês:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setBebes}
-              value={bebes}
-              placeholder="Digite a quantidade de bebês"
-              keyboardType="numeric"
-            />
+            <QuantityInput label="Quantidade de bebês" initialValue={bebes} />
 
             <Text style={styles.label}>Flexibilidade:</Text>
             <View style={styles.pickerContainer}>

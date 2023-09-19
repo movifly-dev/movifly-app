@@ -68,15 +68,15 @@ function MainProvider({ children }) {
   const fetchAndRefreshAccessToken = async () => {
     await fetchAccessToken();
     // Schedule the next token refresh after 10 minutes (600,000 milliseconds)
-    setTimeout(fetchAndRefreshAccessToken, 600000);
+    setTimeout(fetchAndRefreshAccessToken, 1500000  );
   };
 
   useEffect(() => {
     fetchClients();
     fetchRefunds();
     fetchQuotes();
-    fetchAccessToken();
-    fetchAndRefreshAccessToken();
+    // fetchAccessToken();
+    // fetchAndRefreshAccessToken();
   }, []);
 
   // ===============================================================
