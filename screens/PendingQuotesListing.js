@@ -56,20 +56,27 @@ function PendingQuotesListingView() {
   }, [startDateSelected, endDateSelected, nameFilter]);
 
   const filterQuotes = () => {
-    const filteredClients = quotes.filter((quote) => {
+    const filteredQuotes = quotes.filter((quote) => {
       // Filter by name
       const nameMatch = quote.solicitante.toLowerCase().includes(nameFilter.toLowerCase());
 
       // Filter by start date
-      const startDateMatch = !startDateSelected || !startDateFilter || quote.dataIda && formatStringToDate(quote.dataIda) >= startDateFilter;
+      const startDateMatch = !startDateSelected || !startDateFilter || quote.dataVooIda && formatStringToDate(quote.dataVooIda) >= startDateFilter;
 
       // Filter by end date
-      const endDateMatch = !endDateSelected || !endDateFilter || quote.dataIda && formatStringToDate(quote.dataIda) <= endDateFilter;
+      const endDateMatch = !endDateSelected || !endDateFilter || quote.dataVooIda && formatStringToDate(quote.dataVooIda) <= endDateFilter;
 
       return nameMatch && startDateMatch && endDateMatch;
     });
 
-    return filteredClients.slice(0, numClientsToLoad);
+    filteredQuotes.sort((a, b) => {
+      const dateA = a.dataVooIda ? formatStringToDate(a.dataVooIda) : new Date(0);
+      const dateB = b.dataVooIda ? formatStringToDate(b.dataVooIda) : new Date(0);
+
+      return dateA - dateB;
+    });
+
+    return filteredQuotes.slice(0, numClientsToLoad);
   };
 
   const clearFilters = () => {

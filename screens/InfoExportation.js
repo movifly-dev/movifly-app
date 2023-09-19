@@ -29,7 +29,7 @@ function ExcelExportView() {
       'FormaPagamento',
       'ChecklistPago',
       'EmailCliente',
-      'CPF',
+      'CPF/CNPJ',
       'Observação'
     ];
 

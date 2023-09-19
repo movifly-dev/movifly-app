@@ -34,7 +34,7 @@ function ClientDetails({ route }) {
     formaPagamento: 'Forma de Pagamento',
     checklistPagoChecked: 'Checklist Pago',
     emailCliente: 'E-mail do Cliente',
-    cpf: 'CPF',
+    cpf: 'CPF/CNPJ',
     observation: 'Observação'
   };
   const toggleModalEdit = () => {

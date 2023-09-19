@@ -70,6 +70,13 @@ function ClientsListingView() {
       return nameMatch && startDateMatch && endDateMatch;
     });
 
+    filteredClients.sort((a, b) => {
+      const dateA = a.dataVoo ? formatStringToDate(a.dataVoo) : new Date(0);
+      const dateB = b.dataVoo ? formatStringToDate(b.dataVoo) : new Date(0);
+
+      return dateA - dateB;
+    });
+
     return filteredClients.slice(0, numClientsToLoad);
   };
 
@@ -105,7 +112,7 @@ function ClientsListingView() {
           />
 
           <View style={{marginBottom: 10}}>
-            <Text style={{marginBottom: 8}}>Data Inicial:</Text>
+            <Text style={{marginBottom: 8}}>Data Inicial De Voo:</Text>
             <Button
               title={startDateSelected ? startDateFilter === '' ? 'Selecionar Data' : formatDateToString(startDateFilter) : 'Selecionar Data'}
               onPress={() => setShowStartDateFilterPicker(true)}
@@ -122,7 +129,7 @@ function ClientsListingView() {
           </View>
 
           <View style={{marginBottom: 16}}>
-            <Text style={{marginBottom: 8}}>Data Final:</Text>
+            <Text style={{marginBottom: 8}}>Data Final De Voo:</Text>
             <Button
               title={endDateSelected ? endDateFilter === '' ? 'Selecionar Data' : formatDateToString(endDateFilter) : 'Selecionar Data'}
               onPress={() => setShowEndDateFilterPicker(true)}

@@ -84,6 +84,13 @@ function RefundsListingView() {
       return nameMatch && startDateMatch && endDateMatch;
     });
 
+    filteredRefunds.sort((a, b) => {
+      const dateA = a.requestRefundData ? formatStringToDate(a.requestRefundData) : new Date(0);
+      const dateB = b.requestRefundData ? formatStringToDate(b.requestRefundData) : new Date(0);
+
+      return dateA - dateB;
+    });
+
     return filteredRefunds.slice(0, numClientsToLoad);
   };
 
@@ -132,7 +139,7 @@ function RefundsListingView() {
           />
 
           <View style={{marginBottom: 10}}>
-            <Text style={{marginBottom: 8}}>Data Inicial:</Text>
+            <Text style={{marginBottom: 8}}>Data De Solicitação Inicial:</Text>
             <Button
               title={startDateSelected ? startDateFilter === '' ? 'Selecionar Data' : formatDateToString(startDateFilter) : 'Selecionar Data'}
               onPress={() => setShowStartDateFilterPicker(true)}
@@ -149,7 +156,7 @@ function RefundsListingView() {
           </View>
 
           <View style={{marginBottom: 16}}>
-            <Text style={{marginBottom: 8}}>Data Final:</Text>
+            <Text style={{marginBottom: 8}}>Data De Solicitação Final:</Text>
             <Button
               title={endDateSelected ? endDateFilter === '' ? 'Selecionar Data' : formatDateToString(endDateFilter) : 'Selecionar Data'}
               onPress={() => setShowEndDateFilterPicker(true)}
