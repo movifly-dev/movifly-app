@@ -7,8 +7,6 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { FIRESTORE_DB } from '../firebaseConfig';
 import getAmadeusAccessToken from '../utils/getAmadeusAccessToken';
 
-// import { main, firebase, usersCollectionRef } from '../firebaseConfig';
-
 const MainContext = createContext();
 
 function MainProvider({ children }) {
@@ -67,7 +65,7 @@ function MainProvider({ children }) {
 
   const fetchAndRefreshAccessToken = async () => {
     await fetchAccessToken();
-    // Schedule the next token refresh after 10 minutes (600,000 milliseconds)
+    // Schedule the next token refresh after 25 minutes (amadeus token rest for 30min at max)
     setTimeout(fetchAndRefreshAccessToken, 1500000  );
   };
 
@@ -75,8 +73,8 @@ function MainProvider({ children }) {
     fetchClients();
     fetchRefunds();
     fetchQuotes();
-    // fetchAccessToken();
-    // fetchAndRefreshAccessToken();
+    fetchAccessToken();
+    fetchAndRefreshAccessToken();
   }, []);
 
   // ===============================================================

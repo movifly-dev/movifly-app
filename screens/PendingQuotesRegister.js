@@ -137,12 +137,11 @@ function PendingQuotesRegisterView() {
             placeholder="Digite o contato"
           />
 
-          <Text style={styles.label}>Origem:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setOrigem}
+          {/* <Text style={styles.label}>Origem:</Text> */}
+          <CityInput
+            onChange={setOrigem}
             value={origem}
-            placeholder="Digite a origem"
+            label="Origem"
           />
 
           <Text style={styles.label}>Destino:</Text>

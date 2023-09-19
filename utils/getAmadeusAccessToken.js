@@ -17,6 +17,7 @@ async function getAmadeusAccessToken() {
       },
     });
     const accessToken = response.data.access_token;
+    console.log('accessToken', response.data);
     return accessToken;
 
   } catch (error) {
