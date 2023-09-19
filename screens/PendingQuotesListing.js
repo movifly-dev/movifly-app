@@ -98,7 +98,7 @@ function PendingQuotesListingView() {
           {/* Filter input for Nome do Passageiro */}
           <TextInput
             style={styles.filterInput}
-            placeholder="Filtrar por Nome do Passageiro"
+            placeholder="Filtrar por Nome do Solicitante"
             value={nameFilter}
             onChangeText={(text) => setNameFilter(text)}
           />
