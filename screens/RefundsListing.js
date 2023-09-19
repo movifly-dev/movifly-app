@@ -92,7 +92,6 @@ function RefundsListingView() {
   };
 
   const handleRefundDelete = async (refundId) => {
-    console.log('refundId:', refundId);
     try {
       // Delete the client document from Firestore
       const refundsCollectionRef = collection(FIRESTORE_DB, 'reembolsos');

@@ -9,6 +9,8 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePickerModal from '@react-native-community/datetimepicker';
 import formatDateToString from '../utils/formatDateToString';
 
+import CityInput from '../components/CityInput'; // Import the CityInput component
+
 function PendingQuotesRegisterView() {
   const [dataVooIdaSelected, setDataVooIdaSelected] = useState(false);
   const [dataVooVoltaSelected, setDataVooVoltaSelected] = useState(false);

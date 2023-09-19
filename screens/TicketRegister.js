@@ -69,7 +69,6 @@ function TicketRegisterView() {
           pnr: 'LVBIEL',
         },
       });
-      console.log('RESPOSE::', response);
       setFlightDetails(response.data);
     } catch (error) {
       Alert.alert('Erro ao buscar detalhes da reserva. Verifique suas informações.');

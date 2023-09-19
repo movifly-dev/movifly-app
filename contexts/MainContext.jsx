@@ -5,6 +5,7 @@
 import { collection, getDocs } from 'firebase/firestore';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { FIRESTORE_DB } from '../firebaseConfig';
+import getAmadeusAccessToken from '../utils/getAmadeusAccessToken';
 
 // import { main, firebase, usersCollectionRef } from '../firebaseConfig';
 
@@ -14,6 +15,16 @@ function MainProvider({ children }) {
   const [clients, setClients] = useState([]);
   const [refunds, setRefunds] = useState([]);
   const [quotes, setQuotes] = useState([]);
+  const [accessToken, setAccessToken] = useState(null);
+
+  const fetchAccessToken = async () => {
+    try {
+      const token = await getAmadeusAccessToken();
+      setAccessToken(token);
+    } catch (error) {
+      console.error('Error fetching Amadeus access token:', error);
+    }
+  };
 
   const fetchClients = async () => {
     try {
@@ -54,15 +65,23 @@ function MainProvider({ children }) {
     }
   };
 
+  const fetchAndRefreshAccessToken = async () => {
+    await fetchAccessToken();
+    // Schedule the next token refresh after 10 minutes (600,000 milliseconds)
+    setTimeout(fetchAndRefreshAccessToken, 600000);
+  };
+
   useEffect(() => {
     fetchClients();
     fetchRefunds();
     fetchQuotes();
+    fetchAccessToken();
+    fetchAndRefreshAccessToken();
   }, []);
 
   // ===============================================================
 
-  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds, fetchQuotes, quotes }), [clients, refunds, quotes]);
+  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds, fetchQuotes, quotes, accessToken }), [clients, refunds, quotes]);
 
   return (
     <MainContext.Provider value={mainContextValues}>
