@@ -22,6 +22,17 @@ function ChecklistNextFlightsView() {
       return flightDate >= today && flightDate <= selectedDaysFromNow;
     });
 
+    nextFlightsData.sort((a, b) => {
+      if (!a.dataVoo && !b.dataVoo) return 0; // Both have no date, consider them equal
+      if (!a.dataVoo) return -1; // a has no date, so it comes first
+      if (!b.dataVoo) return 1; // b has no date, so it comes first
+
+      const dateA = formatStringToDate(a.dataVoo);
+      const dateB = formatStringToDate(b.dataVoo);
+
+      return dateA - dateB;
+    });
+
     setNextFlights(nextFlightsData);
   }, [clients, daysUntilFlight]);
 
@@ -41,6 +52,15 @@ function ChecklistNextFlightsView() {
               <Picker.Item label="5 Dias" value={5} />
             </Picker>
           </View>
+          {
+            nextFlights.length === 0 && (
+              <View>
+                <Text>
+                  Nenhum voo registrado para os próximos 5 dias.
+                </Text>
+              </View>
+            )
+          }
           {nextFlights.map((flight) => (
             <View key={flight.id} style={styles.flightItem}>
               <Text style={styles.flightInfoLabel}>Nome do Passageiro:</Text>
