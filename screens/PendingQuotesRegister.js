@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePickerModal from '@react-native-community/datetimepicker';
 import formatDateToString from '../utils/formatDateToString';
 
-import CityInput from '../components/CityInput'; // Import the CityInput component
+import CityInput from '../components/CityInput';
 import QuantityInput from '../components/QuantityInput';
 
 function PendingQuotesRegisterView() {
@@ -137,19 +137,16 @@ function PendingQuotesRegisterView() {
             placeholder="Digite o contato"
           />
 
-          {/* <Text style={styles.label}>Origem:</Text> */}
           <CityInput
             onChange={setOrigem}
             value={origem}
             label="Origem"
           />
 
-          <Text style={styles.label}>Destino:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setDestino}
+          <CityInput
+            onChange={setDestino}
             value={destino}
-            placeholder="Digite o destino"
+            label="Destino"
           />
 
           <View style={{marginBottom: 16}}>

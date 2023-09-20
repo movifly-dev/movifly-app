@@ -1,49 +1,110 @@
 /* eslint-disable react/prop-types */
-// CityInput.js
-
-import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import searchCitiesByKeyword from '../../utils/searchCitiesByKeyword';
-import { useMain } from '../../contexts/MainContext';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Button } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import getAirportsWithIata from '../../utils/getAirportsWithIata';
+import { color } from 'react-native-reanimated';
 
 const CityInput = ({ label, value, onChange }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const { accessToken } = useMain();
 
+  useEffect(() => {
+    if (searchTerm.length === 0 && suggestions.length > 0) {
+      setSuggestions([]);
+    }
+  },[searchTerm]);
 
-  const handleInputChange = async (text) => {
-    onChange(text); // Update the input field value
-    const cities = await searchCitiesByKeyword(text, 10, accessToken); // Perform city search
-    setSuggestions(cities); // Update the suggestions
+  const handleCitySelect = (selectedValue) => {
+    onChange(selectedValue);
   };
 
-  const handleCitySelect = (city) => {
-    onChange(city.name); // Update the input field with the selected city
-    setSuggestions([]); // Clear suggestions
+  const handleSearch = async () => {
+    try {
+      if (searchTerm) {
+        const filteredAirports = await getAirportsWithIata(searchTerm);
+
+        if (filteredAirports.length === 1) {
+          handleCitySelect(`${filteredAirports[0].name} - ${filteredAirports[0].iata_code}`);
+        }
+
+        setSuggestions(filteredAirports);
+      } else {
+        setSuggestions([]);
+      }
+    } catch (error) {
+      throw new Error('Error searching airports::' + error);
+    }
   };
 
   return (
     <View>
-      <Text>{label}:</Text>
+      <Text style={styles.label}>{label}:</Text>
       <TextInput
-        style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 5, paddingHorizontal: 10, marginBottom: 20 }}
-        onChangeText={handleInputChange}
-        value={value}
-        placeholder={label.toLowerCase() === 'destino' ? `Digite o ${label.toLowerCase()}` : `Digite a ${label.toLowerCase()}`}
+        style={styles.input}
+        value={searchTerm}
+        placeholder={
+          label.toLowerCase() === 'destino'
+            ? `Digite o ${label.toLowerCase()}`
+            : `Digite a ${label.toLowerCase()}`
+        }
+        onChangeText={(text) => setSearchTerm(text.toUpperCase())}
       />
-      {suggestions.length > 0 && (
-        <FlatList
-          data={suggestions}
-          keyExtractor={(item) => item.name}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleCitySelect(item)}>
-              <Text>{item.name}</Text>
-            </TouchableOpacity>
+      <Button title={`Buscar ${label}`} onPress={handleSearch} disabled={!searchTerm} marginTop={0} />
+      <View style={styles.pickerContainer}>
+        {suggestions.length > 1 && searchTerm.length > 0 ? (
+          <Picker
+            style={styles.picker}
+            selectedValue={value}
+            onValueChange={(itemValue) => handleCitySelect(itemValue)}
+          >
+            {suggestions.map((item) => (
+              <Picker.Item
+                key={item.iata_code}
+                label={`${item.name} - ${item.iata_code}`}
+                value={`${item.name} - ${item.iata_code}`}
+              />
+            ))}
+          </Picker>
+        ) : suggestions.length === 1 && searchTerm.length > 0 ?
+          <Text style={{paddingVertical: 10, textAlign: 'center'}}>
+            {`${suggestions[0].name} - ${suggestions[0].iata_code}`}
+          </Text>
+          :  (
+            <Picker enabled={false} style={styles.hidden} />
           )}
-        />
-      )}
+      </View>
     </View>
   );
 };
+
+
+const styles = {
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
+    marginTop: 10
+  },
+  picker: {
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+};
+
 
 export default CityInput;
