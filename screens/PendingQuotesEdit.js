@@ -11,6 +11,7 @@ import formatDateToString from '../utils/formatDateToString';
 import { MaterialIcons } from '@expo/vector-icons';
 import formatStringToDate from '../utils/formatStringToDate';
 import QuantityInput from '../components/QuantityInput';
+import CityInput from '../components/CityInput';
 
 function EditQuoteView({ isVisible, quote, closeModal}) {
   const { fetchQuotes } = useMain();
@@ -31,7 +32,6 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
   const [flexibilidade, setFlexibilidade] = useState(quote.flexibilidade);
   const [observation, setObservation] = useState(quote.observation);
   const [isFormCompleted, setIsFormCompleted] = useState(true);
-
   // useEffect(() => {
   //   // Check if the form is completed
   //   const requiredFields = [
@@ -132,20 +132,16 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
               placeholder="Digite o contato"
             />
 
-            <Text style={styles.label}>Origem:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setOrigem}
+            <CityInput
+              onChange={setOrigem}
               value={origem}
-              placeholder="Digite a origem"
+              label="Origem"
             />
 
-            <Text style={styles.label}>Destino:</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={setDestino}
+            <CityInput
+              onChange={setDestino}
               value={destino}
-              placeholder="Digite o destino"
+              label="Destino"
             />
 
             <View style={{ marginBottom: 16 }}>

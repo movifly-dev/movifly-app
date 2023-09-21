@@ -9,12 +9,6 @@ const CityInput = ({ label, value, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
-  useEffect(() => {
-    if (searchTerm.length === 0 && suggestions.length > 0) {
-      setSuggestions([]);
-    }
-  },[searchTerm]);
-
   const handleCitySelect = (selectedValue) => {
     onChange(selectedValue);
   };
@@ -52,7 +46,7 @@ const CityInput = ({ label, value, onChange }) => {
       />
       <Button title={`Buscar ${label}`} onPress={handleSearch} disabled={!searchTerm} marginTop={0} />
       <View style={styles.pickerContainer}>
-        {suggestions.length > 1 && searchTerm.length > 0 ? (
+        {suggestions.length > 1 ? (
           <Picker
             style={styles.picker}
             selectedValue={value}
@@ -66,9 +60,9 @@ const CityInput = ({ label, value, onChange }) => {
               />
             ))}
           </Picker>
-        ) : suggestions.length === 1 && searchTerm.length > 0 ?
+        ) : suggestions.length === 1 || value.length > 0 ?
           <Text style={{paddingVertical: 10, textAlign: 'center'}}>
-            {`${suggestions[0].name} - ${suggestions[0].iata_code}`}
+            {value}
           </Text>
           :  (
             <Picker enabled={false} style={styles.hidden} />

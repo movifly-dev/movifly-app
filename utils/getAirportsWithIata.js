@@ -15,7 +15,6 @@ async function getAirportsWithIata(iataCode) {
     });
 
     const airports = response.data.response;
-    console.log('airports', airports);
 
     return airports;
   } catch (error) {
