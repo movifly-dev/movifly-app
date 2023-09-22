@@ -35,6 +35,7 @@ import RefundsListingView from '../screens/RefundsListing';
 import PendingQuotesRegisterView from '../screens/PendingQuotesRegister';
 import PendingQuotesListingView from '../screens/PendingQuotesListing';
 import PendingQuotesDetails from '../screens/PendingQuotesDetails';
+import OffersSearchView from '../screens/OffersSearch';
 
 // =================================================== MAIN STACK GROUP
 
@@ -109,8 +110,7 @@ function ClientTabsGroup() {
           }
 
           const iconComponent = route.name === 'Refund' ?
-            <MaterialCommunityIcons name={iconName} size={size} color={color} />
-            :
+            <MaterialCommunityIcons name={iconName} size={size} color={color} /> :
             <Ionicons name={iconName} size={size} color={color} />;
 
           return iconComponent;
@@ -310,6 +310,8 @@ function RefundsTopTabs() {
   );
 }
 
+// ---------- PENDING QUOTES
+
 function PendingQuotes() {
   return (
     <TopTabs.Navigator
@@ -392,6 +394,14 @@ function DrawerClient() {
         options={({ navigation }) => ({
           title: 'Home',
           headerShown: false,
+        })}
+      />
+      <Drawer.Screen
+        name="OffersSearch"
+        component={OffersSearchView}
+        options={({ navigation }) => ({
+          title: 'Buscar Ofertas',
+          headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />
       <Drawer.Screen
@@ -496,7 +506,6 @@ export function MainNavigation() {
   return (
     <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style="auto" />
-      {/* <ClientStackGroup /> */}
       <DrawerClient />
     </NavigationContainer>
   );
