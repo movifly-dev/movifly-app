@@ -8,6 +8,7 @@ import { color } from 'react-native-reanimated';
 const CityInput = ({ label, value, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleCitySelect = (selectedValue) => {
     onChange(selectedValue);
@@ -15,6 +16,7 @@ const CityInput = ({ label, value, onChange }) => {
 
   const handleSearch = async () => {
     try {
+      setLoading(true);
       if (searchTerm) {
         const filteredAirports = await getAirportsWithIata(searchTerm);
 
@@ -28,6 +30,8 @@ const CityInput = ({ label, value, onChange }) => {
       }
     } catch (error) {
       throw new Error('Error searching airports::' + error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,14 +43,18 @@ const CityInput = ({ label, value, onChange }) => {
         value={searchTerm}
         placeholder={
           label.toLowerCase() === 'destino'
-            ? `Digite o ${label.toLowerCase()}`
-            : `Digite a ${label.toLowerCase()}`
+            ? `Digite o código IATA do ${label.toLowerCase()}`
+            : `Digite o código IATA da ${label.toLowerCase()}`
         }
         onChangeText={(text) => setSearchTerm(text.toUpperCase())}
       />
       <Button title={`Buscar ${label}`} onPress={handleSearch} disabled={!searchTerm} marginTop={0} />
       <View style={styles.pickerContainer}>
-        {suggestions.length > 1 ? (
+        {loading === true ? (
+          <Text style={{paddingVertical: 10, textAlign: 'center', color: '#bbb'}}>
+              Carregando...
+          </Text>
+        ) : suggestions.length > 1 ? (
           <Picker
             style={styles.picker}
             selectedValue={value}
@@ -65,7 +73,9 @@ const CityInput = ({ label, value, onChange }) => {
             {value}
           </Text>
           :  (
-            <Picker enabled={false} style={styles.hidden} />
+            <Text style={{paddingVertical: 10, textAlign: 'center', color: '#bbb'}}>
+              O resultado aparecerá aqui
+            </Text>
           )}
       </View>
     </View>
