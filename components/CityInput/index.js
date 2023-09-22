@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import getAirportsWithIata from '../../utils/getAirportsWithIata';
-import { color } from 'react-native-reanimated';
 
 const CityInput = ({ label, value, onChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
