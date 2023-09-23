@@ -178,11 +178,11 @@ function EditQuoteView({ isVisible, quote, closeModal}) {
               )}
             </View>
 
-            <QuantityInput label="Quantidade de adultos (De 12 ou + anos)" initialValue={adultos} onChangeQuantity={setAdultos} />
+            <QuantityInput label="Quantidade de adultos (De 12 ou + anos):" initialValue={adultos} onChangeQuantity={setAdultos} />
 
-            <QuantityInput label="Quantidade de Crianças (De 2 a 11 anos)" initialValue={criancas} onChangeQuantity={setCriancas}/>
+            <QuantityInput label="Quantidade de crianças (De 2 a 11 anos):" initialValue={criancas} onChangeQuantity={setCriancas}/>
 
-            <QuantityInput label="Quantidade de bebês" initialValue={bebes} onChangeQuantity={setBebes}/>
+            <QuantityInput label="Quantidade de bebês:" initialValue={bebes} onChangeQuantity={setBebes}/>
 
             <Text style={styles.label}>Flexibilidade:</Text>
             <View style={styles.pickerContainer}>

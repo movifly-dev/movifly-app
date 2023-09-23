@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Button, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import getAirportsWithIata from '../../utils/getAirportsWithIata';
 
@@ -28,6 +28,7 @@ const CityInput = ({ label, value, onChange }) => {
         setSuggestions([]);
       }
     } catch (error) {
+      Alert.alert('Erro ao buscar origem/destino, tente novamente.');
       throw new Error('Error searching airports::' + error);
     } finally {
       setLoading(false);

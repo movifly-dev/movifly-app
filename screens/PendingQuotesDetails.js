@@ -25,9 +25,9 @@ function PendingQuotesDetails({ route }) {
     destino: 'Destino',
     dataVooIda: 'Data da Ida',
     dataVooVolta: 'Data da Volta',
-    adultos: 'Quantidade de adultos',
+    adultos: 'Quantidade de Adultos',
     criancas: 'Quantidade de Crianças',
-    bebes: 'Quantidade de bebês',
+    bebes: 'Quantidade de Bebês',
     flexibilidade: 'Flexibilidade',
     observation: 'Observação',
   };

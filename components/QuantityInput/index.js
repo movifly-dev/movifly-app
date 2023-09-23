@@ -23,7 +23,7 @@ const QuantityInput = ({ label, initialValue, onChangeQuantity }) => {
 
   return (
     <View style={styles.quantityContainer}>
-      <Text style={styles.label}>{label}:</Text>
+      <Text style={styles.label}>{label}</Text>
       <View style={styles.inputContainer}>
         <TouchableOpacity onPress={decrement} disabled={value <= 0} style={styles.button}>
           <Text style={styles.buttonText}>-</Text>
