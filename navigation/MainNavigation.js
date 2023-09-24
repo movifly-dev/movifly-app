@@ -400,7 +400,7 @@ function DrawerClient() {
         name="OffersSearch"
         component={OffersSearchView}
         options={({ navigation }) => ({
-          title: 'Buscar Ofertas',
+          title: 'Buscar Voos',
           headerLeft: () => <BackButton navigation={navigation} />,
         })}
       />

@@ -66,7 +66,7 @@ function MainProvider({ children }) {
   const fetchAndRefreshAccessToken = async () => {
     await fetchAccessToken();
     // Schedule the next token refresh after 25 minutes (amadeus token rest for 30min at max)
-    setTimeout(fetchAndRefreshAccessToken, 1500000  );
+    setTimeout(fetchAndRefreshAccessToken, 1500000);
   };
 
   useEffect(() => {

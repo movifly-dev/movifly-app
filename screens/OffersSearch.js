@@ -7,6 +7,7 @@ import DateTimePickerModal from '@react-native-community/datetimepicker';
 import QuantityInput from '../components/QuantityInput';
 import timestampToISO8601 from '../utils/timestampToISO8601';
 import { useMain } from '../contexts/MainContext';
+import FlightOfferCard from '../components/FlightOffersResults';
 
 const OffersSearchView = () => {
   const { accessToken } = useMain();
@@ -20,7 +21,6 @@ const OffersSearchView = () => {
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
   const [nonStop, setNonStop] = useState(true);
-  // const [travelClass, setTravelClass] = useState('');
 
   const [dataVooIdaSelected, setDataVooIdaSelected] = useState(false);
   const [dataVooVoltaSelected, setDataVooVoltaSelected] = useState(false);
@@ -56,30 +56,20 @@ const OffersSearchView = () => {
 
       setFlightOffers(getFlightOffers);
     } catch (error) {
-      if (error.response) {
-        // The request was made, but the server responded with an error status code
-        const responseData = error.response.data;
-
-        // Check if there's an error code and message in the API response
-        if (responseData && responseData.errors) {
-          const firstError = responseData.errors[0]; // Assuming there might be multiple errors
-          const errorCode = firstError.code;
-          const errorMessage = firstError.detail;
-
-          // Log or handle the error code and message
-          console.error('Amadeus API Error Code:', errorCode);
-          console.error('Amadeus API Error Message:', errorMessage);
-        }
-
-        // Log the full response for further debugging if needed
-        console.error('Full API Response:', responseData);
-      } else {
-        // The request was not even made, and there's no response to inspect
-        console.error('Network Error:', error.message);
-      }
-      Alert.alert('Erro ao buscar ofertas, tente novamente.');
-
-      throw new Error('API request error:', error);
+      // if (error.response) {
+      //   const responseData = error.response.data;
+      //   if (responseData && responseData.errors) {
+      //     const firstError = responseData.errors[0];
+      //     const errorCode = firstError.code;
+      //     const errorMessage = firstError.detail;
+      //     console.error('Amadeus API Error Code:', errorCode);
+      //     console.error('Amadeus API Error Message:', errorMessage);
+      //   }
+      //   console.error('Full API Response:', responseData);
+      // } else {
+      //   console.error('Network Error:', error.message);
+      // }
+      Alert.alert('Erro: Dados incorretos ou nenhum voo encontrado.');
     }
   };
 
@@ -117,16 +107,22 @@ const OffersSearchView = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Text style={styles.heading}>Buscador de Oferta:</Text>
+          <Text style={styles.heading}>Buscador de Voos:</Text>
+
+          <Text style={styles.label}>Origem:</Text>
           <TextInput
+            value={originLocationCode}
             style={styles.input}
-            placeholder="Origem (IATA Code) *"
-            onChangeText={(text) => setOriginLocationCode(text)}
+            placeholder="Digite a origem (IATA Code) *"
+            onChangeText={(text) => setOriginLocationCode(text.toUpperCase())}
           />
+
+          <Text style={styles.label}>Destino:</Text>
           <TextInput
+            value={destinationLocationCode}
             style={styles.input}
-            placeholder="Destino (IATA Code) *"
-            onChangeText={(text) => setDestinationLocationCode(text)}
+            placeholder="Digite o destino (IATA Code) *"
+            onChangeText={(text) => setDestinationLocationCode(text.toUpperCase())}
           />
 
           <View style={{marginBottom: 16}}>
@@ -161,12 +157,6 @@ const OffersSearchView = () => {
 
           <QuantityInput label="Quantidade de bebês:" initialValue={infants} onChangeQuantity={setInfants} />
 
-          {/* <TextInput
-        style={styles.input}
-        placeholder="Travel Class (ECONOMY, PREMIUM_ECONOMY, BUSINESS, FIRST)"
-        onChangeText={(text) => setTravelClass(text)}
-      /> */}
-
           <Text style={styles.label} marginBottom={6}>Voos Diretos:</Text>
           <View style={styles.pickerContainer}>
             <Picker
@@ -178,6 +168,7 @@ const OffersSearchView = () => {
               <Picker.Item label="Não" value={false} />
             </Picker>
           </View>
+
           <View style={{gap: 10}}>
             <Button
               title="Buscar Voos"
@@ -195,6 +186,12 @@ const OffersSearchView = () => {
               title="Limpar Filtros"
               onPress={onCleanFilters}
             />
+          </View>
+
+          <View>
+            {flightOffers && flightOffers.length >= 1 && flightOffers.map((offer) => (
+              <FlightOfferCard key={offer.id} flightOffer={offer} />
+            ))}
           </View>
         </View>
       </ScrollView>
@@ -235,6 +232,10 @@ const styles = StyleSheet.create({
   picker: {
     width: '100%',
     paddingHorizontal: 10,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
   }
 });
 
