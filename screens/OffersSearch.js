@@ -40,6 +40,7 @@ const OffersSearchView = () => {
         destinationLocationCode,
         departureDate: timestampToISO8601(departureDate),
         adults,
+        currencyCode: 'BRL'
       };
 
       if (children >= 1) {

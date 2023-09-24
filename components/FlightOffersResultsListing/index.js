@@ -8,7 +8,7 @@ const FlightOffersResultsListing = ({ route }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View>
+        <View style={styles.resultsListingView} >
           {flightOffers.map((offer) => (
             <FlightOfferCard key={offer.id} flightOffer={offer} />
           ))}
@@ -20,3 +20,10 @@ const FlightOffersResultsListing = ({ route }) => {
 };
 
 export default FlightOffersResultsListing;
+
+const styles = StyleSheet.create({
+  resultsListingView: {
+    flex: 1,
+    padding: 20,
+  },
+});
