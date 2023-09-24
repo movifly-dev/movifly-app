@@ -36,6 +36,7 @@ import PendingQuotesRegisterView from '../screens/PendingQuotesRegister';
 import PendingQuotesListingView from '../screens/PendingQuotesListing';
 import PendingQuotesDetails from '../screens/PendingQuotesDetails';
 import OffersSearchView from '../screens/OffersSearch';
+import FlightOffersResultsListing from '../components/FlightOffersResultsListing';
 
 // =================================================== MAIN STACK GROUP
 
@@ -69,6 +70,21 @@ function BaseStackGroup() {
         component={PendingQuotesDetails}
         options={({ navigation }) => ({
           title: 'Detalhes da cotação',
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginRight: 15 }}
+              onPress={() => navigation && navigation.goBack()}
+            >
+              <Ionicons name="arrow-back-outline" size={26} color="black" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <MainStackGroup.Screen
+        name="FlightOffersResultsView"
+        component={FlightOffersResultsListing}
+        options={({ navigation }) => ({
+          title: 'Voos encontrados',
           headerLeft: () => (
             <TouchableOpacity
               style={{ marginRight: 15 }}

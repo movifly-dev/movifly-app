@@ -18,7 +18,11 @@ function MainProvider({ children }) {
   const fetchAccessToken = async () => {
     try {
       const token = await getAmadeusAccessToken();
-      setAccessToken(token);
+      if (token.length === 0) {
+        fetchAccessToken();
+      } else {
+        setAccessToken(token);
+      }
     } catch (error) {
       console.error('Error fetching Amadeus access token:', error);
     }
@@ -65,7 +69,7 @@ function MainProvider({ children }) {
 
   const fetchAndRefreshAccessToken = async () => {
     await fetchAccessToken();
-    // Schedule the next token refresh after 25 minutes (amadeus token rest for 30min at max)
+    // Schedule the next token refresh after 25 minutes (amadeus token rest for 29min at max)
     setTimeout(fetchAndRefreshAccessToken, 1500000);
   };
 

@@ -27,7 +27,7 @@ function TicketRegisterView() {
         },
       };
       const response = await axios.post(baseUrl, new URLSearchParams(data).toString(), config);
-      setAccessToken(response.data.access_token);
+      setAccessToken(response.data);
     } catch (error) {
       console.error('Error getting access token:', error.message);
       if (error.response) {

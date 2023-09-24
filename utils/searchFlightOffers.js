@@ -10,18 +10,21 @@ const searchFlightOffers = async (searchParams, accessToken) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log('responseData::', response.data);
     return response.data.data;
   } catch (error) {
-    if (error.response) {
-      const responseData = error.response.data;
-      if (responseData && responseData.errors) {
-        throw new Error('API request error:', responseData.errors[0]);
-      }
-    } else {
-      throw new Error('API request error:', error);
-    }
-
+    // if (error.response) {
+    //   const responseData = error.response.data;
+    //   if (responseData && responseData.errors) {
+    //     const firstError = responseData.errors[0];
+    //     const errorCode = firstError.code;
+    //     const errorMessage = firstError.detail;
+    //     console.error('Amadeus API Error Code:', errorCode);
+    //     console.error('Amadeus API Error Message:', errorMessage);
+    //   }
+    //   console.error('Full API Response:', responseData);
+    // } else {
+    // }
+    throw new Error('API request error:', error);
   }
 };
 

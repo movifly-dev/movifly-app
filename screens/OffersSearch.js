@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, SafeAreaView, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, SafeAreaView, ScrollView, ActivityIndicator } from 'react-native';
 import searchFlightOffers from '../utils/searchFlightOffers';
 import { Picker } from '@react-native-picker/picker';
 import formatDateToString from '../utils/formatDateToString';
@@ -8,10 +8,15 @@ import QuantityInput from '../components/QuantityInput';
 import timestampToISO8601 from '../utils/timestampToISO8601';
 import { useMain } from '../contexts/MainContext';
 import FlightOfferCard from '../components/FlightOffersResults';
+import { useNavigation } from '@react-navigation/native';
 
 const OffersSearchView = () => {
   const { accessToken } = useMain();
   const [flightOffers, setFlightOffers] = useState([]);
+
+  const navigation = useNavigation();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [originLocationCode, setOriginLocationCode] = useState('');
   const [destinationLocationCode, setDestinationLocationCode] = useState('');
@@ -29,6 +34,7 @@ const OffersSearchView = () => {
 
   const handleSearch = async () => {
     try {
+      setIsLoading(true);
       const searchParams = {
         originLocationCode,
         destinationLocationCode,
@@ -70,6 +76,8 @@ const OffersSearchView = () => {
       //   console.error('Network Error:', error.message);
       // }
       Alert.alert('Erro: Dados incorretos ou nenhum voo encontrado.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -102,13 +110,19 @@ const OffersSearchView = () => {
     setOriginLocationCode('');
   };
 
+  useEffect(() => {
+    if (flightOffers && flightOffers.length > 0) {
+      navigation.navigate('FlightOffersResultsView', {
+        flightOffers
+      });
+    }
+  }, [flightOffers]);
+
   console.log('flightOffers::', flightOffers);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Text style={styles.heading}>Buscador de Voos:</Text>
-
           <Text style={styles.label}>Origem:</Text>
           <TextInput
             value={originLocationCode}
@@ -188,11 +202,12 @@ const OffersSearchView = () => {
             />
           </View>
 
-          <View>
-            {flightOffers && flightOffers.length >= 1 && flightOffers.map((offer) => (
-              <FlightOfferCard key={offer.id} flightOffer={offer} />
-            ))}
-          </View>
+
+          {isLoading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#ef7946" />
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -236,7 +251,18 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 8,
-  }
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)'
+  },
 });
 
 export default OffersSearchView;
