@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, StyleSheet, Platform, Linking } from 'react-native';
+import { DocumentPicker, DocumentPickerTypes } from 'expo-document-picker';
 import { useMain } from '../contexts/MainContext';
 import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
@@ -54,24 +55,17 @@ function ExcelExportView() {
     const data = [csvHeader, ...csvData];
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Clients');
+    XLSX.utils.book_append_sheet(wb, ws, 'Vendas', true);
 
-    // Generate a unique file name for the Excel file
-    const fileName = `clients_${Date.now()}.xlsx`;
+    const base64 = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+
+    const fileName = `Vendas_${Date.now()}.xlsx`;
     const fileUri = FileSystem.documentDirectory + fileName;
 
-    const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
-
     try {
-      await FileSystem.writeAsStringAsync(fileUri, wbout, { encoding: FileSystem.EncodingType.Base64 });
+      await FileSystem.writeAsStringAsync(fileUri, base64, { encoding: FileSystem.EncodingType.Base64 });
 
-      if (Platform.OS === 'android') {
-        const downloadUrl = fileUri;
-        Sharing.shareAsync(downloadUrl);
-      } else if (Platform.OS === 'ios') {
-        const fileURL = `file://${fileUri}`;
-        await Linking.openURL(fileURL);
-      }
+      Sharing.shareAsync(fileUri);
     } catch (error) {
       throw new Error('Error creating Excel file:' + error);
     }
