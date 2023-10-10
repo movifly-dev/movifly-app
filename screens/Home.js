@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 
 function HomeView() {
   // ================================================================
@@ -7,7 +7,7 @@ function HomeView() {
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.homeView}></View>
-        {/* <Text>fffff</Text> */}
+        <Text>HOME VIEW</Text>
       </ScrollView>
     </SafeAreaView>
   );

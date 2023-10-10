@@ -9,7 +9,6 @@ import {
   NavigationContainer,
   useNavigation,
 } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { DrawerContentScrollView, createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
@@ -46,176 +45,15 @@ function BaseStackGroup() {
   return (
     <MainStackGroup.Navigator>
       <MainStackGroup.Screen
-        name="TabsGroup"
-        component={ClientTabsGroup}
+        name="HomeView"
+        component={HomeView}
         options={{ headerShown: false }}
-      />
-      <MainStackGroup.Screen
-        name="ClientDetails"
-        component={ClientDetails}
-        options={({ navigation }) => ({
-          title: 'Detalhes da venda',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginRight: 15 }}
-              onPress={() => navigation && navigation.goBack()}
-            >
-              <Ionicons name="arrow-back-outline" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <MainStackGroup.Screen
-        name="QuoteDetails"
-        component={PendingQuotesDetails}
-        options={({ navigation }) => ({
-          title: 'Detalhes da cotação',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginRight: 15 }}
-              onPress={() => navigation && navigation.goBack()}
-            >
-              <Ionicons name="arrow-back-outline" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <MainStackGroup.Screen
-        name="FlightOffersResultsView"
-        component={FlightOffersResultsListing}
-        options={({ navigation }) => ({
-          title: 'Voos encontrados',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginRight: 15 }}
-              onPress={() => navigation && navigation.goBack()}
-            >
-              <Ionicons name="arrow-back-outline" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        })}
       />
     </MainStackGroup.Navigator>
   );
 }
 
 // =================================================== MAIN STACK GROUP
-
-const Tab = createBottomTabNavigator();
-
-// ---------- CLIENT
-
-function ClientTabsGroup() {
-  const navigation = useNavigation();
-
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === 'ConfigurationsTab') {
-            iconName = focused ? 'ios-settings' : 'settings-outline';
-          } else if (route.name === 'ClientsTab') {
-            iconName = focused ? 'ios-people' : 'people-outline';
-          } else if (route.name === 'TicketsTab') {
-            iconName = focused ? 'barcode' : 'barcode-outline';
-          } else if (route.name === 'Refund') {
-            iconName = 'cash-refund';
-          } else if (route.name === 'PendingQuotes') {
-            iconName = 'md-cash-outline';
-          }
-
-          const iconComponent = route.name === 'Refund' ?
-            <MaterialCommunityIcons name={iconName} size={size} color={color} /> :
-            <Ionicons name={iconName} size={size} color={color} />;
-
-          return iconComponent;
-        },
-        tabBarActiveTintColor: '#ef7946',
-        tabBarInactiveTintColor: 'gray',
-      })}
-    >
-      <Tab.Screen
-        name="ClientsTab"
-        component={ClientsTopTabs}
-        options={{
-          title: 'Vendas',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 10 }}
-              onPress={() => navigation.openDrawer()}
-            >
-              <Ionicons name="md-menu" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="TicketsTab"
-        component={TicketsTopTabs}
-        options={{
-          title: 'Bilhetes',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 10 }}
-              onPress={() => navigation.openDrawer()}
-            >
-              <Ionicons name="md-menu" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Refund"
-        component={RefundsTopTabs}
-        options={{
-          title: 'Reembolsos',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 10 }}
-              onPress={() => navigation.openDrawer()}
-            >
-              <Ionicons name="md-menu" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="PendingQuotes"
-        component={PendingQuotes}
-        options={{
-          title: 'Cotações',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 10 }}
-              onPress={() => navigation.openDrawer()}
-            >
-              <Ionicons name="md-menu" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="ConfigurationsTab"
-        component={InfoExportationView}
-        options={{
-          title: 'Ferramentas',
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 10 }}
-              onPress={() => navigation.openDrawer()}
-            >
-              <Ionicons name="md-menu" size={26} color="black" />
-            </TouchableOpacity>
-          ),
-        }}
-        screenOptions={{}}
-      />
-    </Tab.Navigator>
-  );
-}
 
 // =================================================== TOP TABS
 
@@ -409,95 +247,48 @@ function DrawerClient() {
         component={BaseStackGroup}
         options={({ navigation }) => ({
           title: 'Home',
-          headerShown: false,
         })}
       />
       <Drawer.Screen
         name="OffersSearch"
         component={OffersSearchView}
         options={({ navigation }) => ({
-          title: 'Buscar Voos',
-          headerLeft: () => <BackButton navigation={navigation} />,
+          title: 'Buscar Voos'
         })}
       />
       <Drawer.Screen
         name="ClientsRegister"
-        component={ClientsRegisterView}
+        component={ClientsTopTabs}
         options={({ navigation }) => ({
-          title: 'Cadastro de Vendas',
-          headerLeft: () => <BackButton navigation={navigation} />,
-        })}
-      />
-      <Drawer.Screen
-        name="ClientsListing"
-        component={ClientsListingView}
-        options={({ navigation }) => ({
-          title: 'Listagem de Vendas',
-          headerLeft: () => <BackButton navigation={navigation} />,
+          title: 'Vendas'
         })}
       />
       <Drawer.Screen
         name="TicketsRegister"
-        component={TicketsRegisterView}
+        component={TicketsTopTabs}
         options={({ navigation }) => ({
-          title: 'Detalhes de Bilhetes',
-          headerLeft: () => <BackButton navigation={navigation} />,
+          title: 'Bilhetes'
         })}
       />
       <Drawer.Screen
-        name="TicketsListing"
-        component={TicketsListingView}
+        name="Refund"
+        component={RefundsTopTabs}
         options={({ navigation }) => ({
-          title: 'Bilhetes consultados',
-          headerLeft: () => <BackButton navigation={navigation} />,
+          title: 'Reembolsos'
         })}
       />
       <Drawer.Screen
-        name="ChecklistNextFlights"
-        component={ChecklistNextFlightsView}
+        name="PendingQuotes"
+        component={PendingQuotes}
         options={({ navigation }) => ({
-          title: 'Voos Próximos',
-          headerLeft: () => <BackButton navigation={navigation} />,
-        })}
-      />
-      <Drawer.Screen
-        name="RefundRegister"
-        component={RefundsRegisterView}
-        options={({ navigation }) => ({
-          title: 'Cadastro de Reembolso',
-          headerLeft: () => <BackButton navigation={navigation} />,
-        })}
-      />
-      <Drawer.Screen
-        name="RefundListing"
-        component={RefundsListingView}
-        options={({ navigation }) => ({
-          title: 'Listagem de Reembolsos',
-          headerLeft: () => <BackButton navigation={navigation} />,
-        })}
-      />
-      <Drawer.Screen
-        name="PendingQuotesRegister"
-        component={PendingQuotesRegisterView}
-        options={({ navigation }) => ({
-          title: 'Cadastro de Cotações',
-          headerLeft: () => <BackButton navigation={navigation} />,
-        })}
-      />
-      <Drawer.Screen
-        name="PendingQuotesListing"
-        component={PendingQuotesListingView}
-        options={({ navigation }) => ({
-          title: 'Listagem de Cotações',
-          headerLeft: () => <BackButton navigation={navigation} />,
+          title: 'Cotações'
         })}
       />
       <Drawer.Screen
         name="InfoExportation"
         component={InfoExportationView}
         options={({ navigation }) => ({
-          title: 'Exportar Informações',
-          headerLeft: () => <BackButton navigation={navigation} />,
+          title: 'Exportar Informações'
         })}
       />
     </Drawer.Navigator>
