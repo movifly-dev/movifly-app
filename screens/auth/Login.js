@@ -71,7 +71,6 @@ function LoginView() {
               onPress={handleLogin}
             />
           </Stack>
-          <Text>{password} - {username}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
