@@ -1,5 +1,6 @@
+/* eslint-disable no-undef */
 import { useState } from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Stack, TextInput, IconButton, Box, Button } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
@@ -35,6 +36,9 @@ function LoginView() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white'}}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1}}>
+        <View style={styles.imageContainer}>
+          <Image source={require('../../assets/main.png')} style={styles.image} />
+        </View>
         <View style={styles.loginView}>
           <Box style={styles.loginBoxIcon}>
             <Icon name="account-circle" size={60}/>
@@ -80,9 +84,18 @@ function LoginView() {
 export default LoginView;
 
 const styles = {
+  imageContainer: {
+    marginTop: 20,
+    display: 'flex',
+    alignItems: 'center'
+  },
+  image: {
+    width: 200, // Adjust the width based on your design
+    height: 100, // Adjust the height based on your design
+    resizeMode: 'contain', // Adjust the resizeMode based on your design
+  },
   loginView: {
     justifyContent: 'center',
-    flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 40,
   },

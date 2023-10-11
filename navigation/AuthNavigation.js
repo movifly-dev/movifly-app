@@ -13,6 +13,8 @@ import { StatusBar } from 'expo-status-bar';
 // [IMPORT] =========== AUTH SCREENS
 
 import LoginView from '../screens/auth/Login';
+import OffersSearchView from '../screens/OffersSearch';
+import HomeAuth from '../screens/auth/Home';
 
 // =================================================== AUTH NAVIGATORS
 
@@ -24,8 +26,10 @@ export function AuthNavigation() {
   return (
     <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style="auto" />
-      <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-        <AuthStack.Screen name="Login" component={LoginView} />
+      <AuthStack.Navigator>
+        <AuthStack.Screen name="HomeAuthView" component={HomeAuth} options={{ headerShown: false }} />
+        <AuthStack.Screen name="Login" component={LoginView} options={{ headerShown: true, title: '' }} />
+        <AuthStack.Screen name="OffersSearchView" component={OffersSearchView} options={{ headerShown: true, title: 'Buscar Voos' }} />
       </AuthStack.Navigator>
     </NavigationContainer>
   );

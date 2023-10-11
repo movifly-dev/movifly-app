@@ -23,7 +23,10 @@ export default function Main() {
   return (
     <>
       {!user ? (
-        <AuthNavigation />
+        <MainProvider>
+          <AuthNavigation />
+        </MainProvider>
+
       ) : (
         <MainProvider>
           <MainNavigation />

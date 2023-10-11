@@ -18,41 +18,41 @@ function HomeView() {
         <View style={styles.homeView}>
           {/* Box 0 - Voos Search */}
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('OffersSearch')}>
-            <FontAwesome5 name="search-location" size={35} color="black" />
+            <FontAwesome5 name="search-location" size={35} color="white" />
             <Text style={styles.boxText}>Buscar Voos</Text>
           </TouchableOpacity>
 
           {/* Box 1 - Sales */}
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('ClientsRegisterDrawerItem')}>
-            <Ionicons name="cash-outline" size={40} color="black" />
+            <Ionicons name="cash-outline" size={40} color="white" />
             <Text style={styles.boxText}>Vendas</Text>
           </TouchableOpacity>
 
           {/* Box 2 - Tickets */}
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('TicketsRegisterDrawerItem')}>
-            <FontAwesome5 name="ticket-alt" size={30} color="black" />
+            <FontAwesome5 name="ticket-alt" size={30} color="white" />
             <Text style={styles.boxText}>Bilhetes</Text>
           </TouchableOpacity>
 
           {/* Box 3 - Refunds */}
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('RefundRegisterDrawerItem')}>
-            <MaterialCommunityIcons name="cash-refund" size={40} color="black" />
+            <MaterialCommunityIcons name="cash-refund" size={40} color="white" />
             <Text style={styles.boxText}>Reembolsos</Text>
           </TouchableOpacity>
 
           {/* Box 4 - Pending Quotes */}
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('PendingQuotesRegisterDrawerItem')}>
-            <MaterialIcons name="request-quote" size={40} color="black" />
+            <MaterialIcons name="request-quote" size={40} color="white" />
             <Text style={styles.boxText}>Cotações</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('NextFlightsView')}>
-            <MaterialIcons name="flight" size={40} color="black" />
+            <MaterialIcons name="flight" size={40} color="white" />
             <Text style={styles.boxText}>Voos Próximos</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('InfoExportation')}>
-            <FontAwesome5 name="download" size={35} color="black" />
+            <FontAwesome5 name="download" size={35} color="white" />
             <Text style={styles.boxText}>Exportar Informações</Text>
           </TouchableOpacity>
         </View>

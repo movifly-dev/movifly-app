@@ -43,7 +43,8 @@
     "react-native-share": "^9.2.3",
     "react-native-tab-view": "^3.5.2",
     "typed-async-storage": "^3.1.2",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "expo-asset": "~8.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
