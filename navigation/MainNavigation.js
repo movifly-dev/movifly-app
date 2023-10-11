@@ -53,8 +53,6 @@ function BaseStackGroup() {
   );
 }
 
-// =================================================== MAIN STACK GROUP
-
 // =================================================== TOP TABS
 
 const TopTabs = createMaterialTopTabNavigator();
@@ -199,6 +197,52 @@ function PendingQuotes() {
   );
 }
 
+// =================================================== CLIENT STACK
+
+const ClientStack = createNativeStackNavigator();
+
+function ClientsStack() {
+  return (
+    <ClientStack.Navigator>
+      <ClientStack.Screen
+        name="Clients"
+        component={ClientsTopTabs}
+        options={{ headerShown: false }}
+      />
+      <ClientStack.Screen
+        name="ClientDetails"
+        component={ClientDetails}
+        options={({ route }) => ({
+          title: route.params.client.nomePassageiro || 'Detalhes do Cliente',
+        })}
+      />
+    </ClientStack.Navigator>
+  );
+}
+
+// =================================================== QUOTES STACK
+
+const PendingQuoteStack = createNativeStackNavigator();
+
+function PendingQuotesStack() {
+  return (
+    <PendingQuoteStack.Navigator>
+      <PendingQuoteStack.Screen
+        name="Quotes"
+        component={PendingQuotes}
+        options={{ headerShown: false }}
+      />
+      <PendingQuoteStack.Screen
+        name="QuoteDetails"
+        component={PendingQuotesDetails}
+        options={({ route }) => ({
+          title: route.params.quote.solicitante || 'Detalhes da Cotação',
+        })}
+      />
+    </PendingQuoteStack.Navigator>
+  );
+}
+
 // =================================================== DRAWER | SIDE MENU
 
 const Drawer = createDrawerNavigator();
@@ -257,31 +301,38 @@ function DrawerClient() {
         })}
       />
       <Drawer.Screen
-        name="ClientsRegister"
-        component={ClientsTopTabs}
+        name="ClientsRegisterDrawerItem"
+        component={ClientsStack}
         options={({ navigation }) => ({
           title: 'Vendas'
         })}
       />
       <Drawer.Screen
-        name="TicketsRegister"
+        name="TicketsRegisterDrawerItem"
         component={TicketsTopTabs}
         options={({ navigation }) => ({
           title: 'Bilhetes'
         })}
       />
       <Drawer.Screen
-        name="Refund"
+        name="RefundRegisterDrawerItem"
         component={RefundsTopTabs}
         options={({ navigation }) => ({
           title: 'Reembolsos'
         })}
       />
       <Drawer.Screen
-        name="PendingQuotes"
-        component={PendingQuotes}
+        name="PendingQuotesRegisterDrawerItem"
+        component={PendingQuotesStack}
         options={({ navigation }) => ({
           title: 'Cotações'
+        })}
+      />
+      <Drawer.Screen
+        name="NextFlightsView"
+        component={ChecklistNextFlightsView}
+        options={({ navigation }) => ({
+          title: 'Voos Próximos'
         })}
       />
       <Drawer.Screen
