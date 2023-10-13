@@ -243,6 +243,27 @@ function PendingQuotesStack() {
   );
 }
 
+const searchFlightsStack = createNativeStackNavigator();
+
+function SearchFlightStack() {
+  return (
+    <searchFlightsStack.Navigator>
+      <searchFlightsStack.Screen
+        name="FlightOffersSearch"
+        component={OffersSearchView}
+        options={{ headerShown: false }}
+      />
+      <searchFlightsStack.Screen
+        name="FlightOffersResultsView"
+        component={FlightOffersResultsListing}
+        options={{
+          title: 'Resultado da busca',
+        }}
+      />
+    </searchFlightsStack.Navigator>
+  );
+}
+
 // =================================================== DRAWER | SIDE MENU
 
 const Drawer = createDrawerNavigator();
@@ -290,12 +311,12 @@ function DrawerClient() {
         name="Home"
         component={BaseStackGroup}
         options={({ navigation }) => ({
-          title: 'Home',
+          title: 'Início',
         })}
       />
       <Drawer.Screen
         name="OffersSearch"
-        component={OffersSearchView}
+        component={SearchFlightStack}
         options={({ navigation }) => ({
           title: 'Buscar Voos'
         })}
@@ -311,7 +332,7 @@ function DrawerClient() {
         name="TicketsRegisterDrawerItem"
         component={TicketsTopTabs}
         options={({ navigation }) => ({
-          title: 'Bilhetes'
+          title: 'Consulta De Bilhetes'
         })}
       />
       <Drawer.Screen

@@ -1,16 +1,19 @@
 import axios from 'axios';
-import confirmFlightOfferPricing from './searchFlightPriceOffers';
+import { useMain } from '../contexts/MainContext';
 const BASE_URL = 'https://test.api.amadeus.com/v2';
 
-const searchFlightOffers = async (searchParams, accessToken) => {
+const confirmFlightOfferPricing = async (flightOffersData) => {
+  const { accessToken, fetchAccessToken } = useMain();
+  console.log('DSFDSFSDFDSFDSFDSFD');
   try {
-    const response = await axios.get(`${BASE_URL}/shopping/flight-offers`, {
-      params: searchParams,
+    await fetchAccessToken();
+    const response = await axios.post(`${BASE_URL}/shopping/flight-offers/pricing`, {
+      flightOffersData,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // const getPricesCorrect = await confirmFlightOfferPricing(response.data);
+
     return response.data.data;
   } catch (error) {
     if (error.response) {
@@ -28,4 +31,4 @@ const searchFlightOffers = async (searchParams, accessToken) => {
   }
 };
 
-export default searchFlightOffers;
+export default confirmFlightOfferPricing;

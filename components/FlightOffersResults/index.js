@@ -1,39 +1,50 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import ISO8601ToDate from '../../utils/ISO8601ToDate';
 import formatDuration from '../../utils/formatDuration';
+import getAirlineDetails from '../../utils/getAirlineByCode';
+import { useMain } from '../../contexts/MainContext';
 
-const FlightOfferCard = ({ flightOffer }) => {
+const FlightOfferCard = ({ flightOffer, dataVooIdaSelected, nonStop }) => {
+  const { accessToken, fetchAccessToken } = useMain();
   const {
-    lastTicketingDate,
     price,
     validatingAirlineCodes,
-    numberOfBookableSeats,
     itineraries,
   } = flightOffer;
+  const [airlineName, setAirlineName] = useState('');
+
+  useEffect(() => {
+    const fetchAirlineDetails = async () => {
+      try {
+        await fetchAccessToken();
+        const airlineName = await getAirlineDetails(validatingAirlineCodes[0], accessToken);
+        setAirlineName(airlineName[0].commonName);
+      } catch(error) {
+        throw new Error('Erro ao carregar nome da companhia aérea');
+      }
+    };
+
+    fetchAirlineDetails();
+  }, []);
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
 
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.title}>Código da Companhia Aérea: </Text>
-        <Text style={styles.detail}>
-          {validatingAirlineCodes.join(', ')}
-        </Text>
+        <Text style={styles.title}>Companhia Aérea:</Text>
+        <Text style={styles.detail}>{airlineName}</Text>
       </View>
 
       <View>
-        <Text style={styles.title}>Assentos Disponíveis: </Text>
-        <Text style={styles.detail}>{numberOfBookableSeats}</Text>
-      </View>
-
-      <View>
-        <Text style={styles.title}>
-        Data Limite para Emissão de Bilhete:
-        </Text>
-        <Text style={styles.detail}>
-          {ISO8601ToDate(lastTicketingDate)}
-        </Text>
+        <Text style={styles.title}>Direto:</Text>
+        <Text style={styles.detail}>{nonStop}</Text>
       </View>
 
       <View>
@@ -47,18 +58,20 @@ const FlightOfferCard = ({ flightOffer }) => {
         <Text style={styles.title}>Itinerário:</Text>
         {itineraries.map((itinerary, index) => (
           <View key={index}>
-            <Text style={styles.itinerary}>
-              {itinerary.segments.map((segment) => segment.departure.iataCode).join(' -> ')}
-            </Text>
-            {itinerary.duration && (
-              <Text style={styles.itinerary}>
-              Duração: {formatDuration(itinerary.duration)}
-              </Text>
-            )}
+            {itinerary.segments.map((segment, segmentIndex) => (
+              <View key={segmentIndex}>
+                <Text style={styles.itinerary}>
+                  {segment.departure.iataCode} ({formatTime(segment.departure.at)}) {'->'}
+                  {segment.arrival.iataCode} ({formatTime(segment.arrival.at)})
+                </Text>
+                <Text style={styles.itinerary}>
+                  Duração do voo: {formatDuration(segment.duration)}
+                </Text>
+              </View>
+            ))}
           </View>
         ))}
       </View>
-
     </View>
   );
 };
@@ -93,8 +106,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFF',
     marginTop: 4,
-    marginLeft: 10
-  }
+    marginLeft: 10,
+  },
 });
 
 export default FlightOfferCard;

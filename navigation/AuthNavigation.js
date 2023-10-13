@@ -15,6 +15,7 @@ import { StatusBar } from 'expo-status-bar';
 import LoginView from '../screens/auth/Login';
 import OffersSearchView from '../screens/OffersSearch';
 import HomeAuth from '../screens/auth/Home';
+import FlightOffersResultsListing from '../components/FlightOffersResultsListing';
 
 // =================================================== AUTH NAVIGATORS
 
@@ -30,6 +31,8 @@ export function AuthNavigation() {
         <AuthStack.Screen name="HomeAuthView" component={HomeAuth} options={{ headerShown: false }} />
         <AuthStack.Screen name="Login" component={LoginView} options={{ headerShown: true, title: '' }} />
         <AuthStack.Screen name="OffersSearchView" component={OffersSearchView} options={{ headerShown: true, title: 'Buscar Voos' }} />
+        <AuthStack.Screen name="FlightOffersResultsView" component={FlightOffersResultsListing} options={{ headerShown: true, title: 'Resultados da Busca' }} />
+
       </AuthStack.Navigator>
     </NavigationContainer>
   );

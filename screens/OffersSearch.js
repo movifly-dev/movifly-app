@@ -11,7 +11,7 @@ import FlightOfferCard from '../components/FlightOffersResults';
 import { useNavigation } from '@react-navigation/native';
 
 const OffersSearchView = () => {
-  const { accessToken } = useMain();
+  const { accessToken, fetchAccessToken } = useMain();
   const [flightOffers, setFlightOffers] = useState([]);
 
   const navigation = useNavigation();
@@ -40,9 +40,10 @@ const OffersSearchView = () => {
         destinationLocationCode,
         departureDate: timestampToISO8601(departureDate),
         adults,
-        currencyCode: 'BRL'
+        currencyCode: 'BRL',
+        nonStop,
       };
-
+      console.log('searchParams', searchParams);
       if (children >= 1) {
         searchParams.children = children;
       }
@@ -51,31 +52,31 @@ const OffersSearchView = () => {
         searchParams.infants = infants;
       }
 
-      if (nonStop) {
-        searchParams.nonStop = nonStop;
-      }
-
       if (dataVooVoltaSelected) {
         searchParams.returnDate = timestampToISO8601(returnDate);
       }
-
+      await fetchAccessToken();
       const getFlightOffers = await searchFlightOffers(searchParams, accessToken);
+
+      if (getFlightOffers.length === 0) {
+        throw new Error();
+      }
 
       setFlightOffers(getFlightOffers);
     } catch (error) {
-      // if (error.response) {
-      //   const responseData = error.response.data;
-      //   if (responseData && responseData.errors) {
-      //     const firstError = responseData.errors[0];
-      //     const errorCode = firstError.code;
-      //     const errorMessage = firstError.detail;
-      //     console.error('Amadeus API Error Code:', errorCode);
-      //     console.error('Amadeus API Error Message:', errorMessage);
-      //   }
-      //   console.error('Full API Response:', responseData);
-      // } else {
-      //   console.error('Network Error:', error.message);
-      // }
+      if (error.response) {
+        const responseData = error.response.data;
+        if (responseData && responseData.errors) {
+          const firstError = responseData.errors[0];
+          const errorCode = firstError.code;
+          const errorMessage = firstError.detail;
+          console.error('Amadeus API Error Code:', errorCode);
+          console.error('Amadeus API Error Message:', errorMessage);
+        }
+        console.error('Full API Response:', responseData);
+      } else {
+        console.error('Network Error:', error.message);
+      }
       Alert.alert('Erro: Dados incorretos ou nenhum voo encontrado.');
     } finally {
       setIsLoading(false);
@@ -114,12 +115,15 @@ const OffersSearchView = () => {
   useEffect(() => {
     if (flightOffers && flightOffers.length > 0) {
       navigation.navigate('FlightOffersResultsView', {
-        flightOffers
+        flightOffers,
+        departureDate: formatDateToString(departureDate),
+        nonStop: nonStop === true ? 'Sim' : 'Não'
       });
     }
   }, [flightOffers]);
 
-  console.log('flightOffers::', flightOffers);
+  console.log('flightOffers::', flightOffers[0]?.itineraries);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>

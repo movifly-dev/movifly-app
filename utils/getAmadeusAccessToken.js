@@ -16,6 +16,11 @@ async function getAmadeusAccessToken() {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
+
+    if (response.data.state !== 'approved' || response.data.access_token.length === 0) {
+      getAmadeusAccessToken();
+    }
+
     const accessToken = response.data.access_token;
     return accessToken;
 

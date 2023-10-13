@@ -31,7 +31,7 @@ function HomeView() {
           {/* Box 2 - Tickets */}
           <TouchableOpacity style={styles.box} onPress={() => navigateToScreen('TicketsRegisterDrawerItem')}>
             <FontAwesome5 name="ticket-alt" size={30} color="white" />
-            <Text style={styles.boxText}>Bilhetes</Text>
+            <Text style={styles.boxText}>Consulta De Bilhetes</Text>
           </TouchableOpacity>
 
           {/* Box 3 - Refunds */}

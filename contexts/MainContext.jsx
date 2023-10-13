@@ -83,7 +83,7 @@ function MainProvider({ children }) {
 
   // ===============================================================
 
-  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds, fetchQuotes, quotes, accessToken }), [clients, refunds, quotes]);
+  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds, fetchQuotes, quotes, accessToken, fetchAccessToken }), [clients, refunds, quotes]);
 
   return (
     <MainContext.Provider value={mainContextValues}>
