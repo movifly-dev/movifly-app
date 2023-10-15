@@ -42,8 +42,9 @@ const OffersSearchView = () => {
         adults,
         currencyCode: 'BRL',
         nonStop,
+        max: 7
       };
-      console.log('searchParams', searchParams);
+
       if (children >= 1) {
         searchParams.children = children;
       }
@@ -117,12 +118,9 @@ const OffersSearchView = () => {
       navigation.navigate('FlightOffersResultsView', {
         flightOffers,
         departureDate: formatDateToString(departureDate),
-        nonStop: nonStop === true ? 'Sim' : 'Não'
       });
     }
   }, [flightOffers]);
-
-  console.log('flightOffers::', flightOffers[0]?.itineraries);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>

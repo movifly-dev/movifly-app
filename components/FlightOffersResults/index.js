@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import formatDuration from '../../utils/formatDuration';
 import getAirlineDetails from '../../utils/getAirlineByCode';
 import { useMain } from '../../contexts/MainContext';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const FlightOfferCard = ({ flightOffer, dataVooIdaSelected, nonStop }) => {
+const FlightOfferCard = ({ flightOffer, dataVooIdaSelected }) => {
   const { accessToken, fetchAccessToken } = useMain();
   const {
     price,
@@ -36,47 +37,58 @@ const FlightOfferCard = ({ flightOffer, dataVooIdaSelected, nonStop }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.title}>Companhia Aérea:</Text>
-        <Text style={styles.detail}>{airlineName}</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <LinearGradient colors={['#ff9966', '#ff5e62']} style={styles.container}>
+          <View>
+            <Text style={styles.title}>Companhia Aérea:</Text>
+            <Text style={styles.detail}>{airlineName}</Text>
+          </View>
 
-      <View>
-        <Text style={styles.title}>Direto:</Text>
-        <Text style={styles.detail}>{nonStop}</Text>
-      </View>
+          <View>
+            <Text style={styles.title}>Direto:</Text>
+            {itineraries.every((itinerary) => itinerary.segments.length === 1) ? (
+              <Text style={styles.detail}>Sim</Text>
+            ) : (
+              <Text style={styles.detail}>Não</Text>
+            )}
+          </View>
 
-      <View>
-        <Text style={styles.title}>Preço: </Text>
-        <Text style={styles.detail}>
-          R$ {price.grandTotal} {price.currency}
-        </Text>
-      </View>
+          <View>
+            <Text style={styles.title}>Preço: </Text>
+            <Text style={styles.detail}>
+            R$ {price.grandTotal} {price.currency}
+            </Text>
+          </View>
 
-      <View>
-        <Text style={styles.title}>Itinerário:</Text>
-        {itineraries.map((itinerary, index) => (
-          <View key={index}>
-            {itinerary.segments.map((segment, segmentIndex) => (
-              <View key={segmentIndex}>
-                <Text style={styles.itinerary}>
-                  {segment.departure.iataCode} ({formatTime(segment.departure.at)}) {'->'}
-                  {segment.arrival.iataCode} ({formatTime(segment.arrival.at)})
-                </Text>
-                <Text style={styles.itinerary}>
-                  Duração do voo: {formatDuration(segment.duration)}
-                </Text>
+          <View>
+            <Text style={styles.title}>Itinerário:</Text>
+            {itineraries.map((itinerary, index) => (
+              <View key={index}>
+                {itinerary.segments.map((segment, segmentIndex) => (
+                  <View key={segmentIndex}>
+                    <Text style={styles.itinerary}>
+                      {segment.departure.iataCode} ({formatTime(segment.departure.at)}) {'->'}
+                      {segment.arrival.iataCode} ({formatTime(segment.arrival.at)})
+                    </Text>
+                    <Text style={styles.itinerary}>
+                    Duração do voo: {formatDuration(segment.duration)}
+                    </Text>
+                  </View>
+                ))}
               </View>
             ))}
           </View>
-        ))}
-      </View>
-    </View>
+        </LinearGradient>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+  },
   container: {
     paddingVertical: 10,
     borderBottomWidth: 1,

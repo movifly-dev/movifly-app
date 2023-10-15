@@ -27,7 +27,7 @@ function MainProvider({ children }) {
       console.error('Error fetching Amadeus access token:', error);
     }
   };
-
+  console.log("accessToken TESTE:", accessToken);
   const fetchClients = async () => {
     try {
       const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'clientes'));
@@ -83,7 +83,7 @@ function MainProvider({ children }) {
 
   // ===============================================================
 
-  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds, fetchQuotes, quotes, accessToken, fetchAccessToken }), [clients, refunds, quotes]);
+  const mainContextValues = useMemo(() => ({ clients, fetchClients, refunds, fetchRefunds, fetchQuotes, quotes, accessToken, fetchAccessToken }), [clients, refunds, quotes, accessToken]);
 
   return (
     <MainContext.Provider value={mainContextValues}>
