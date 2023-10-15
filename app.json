@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "movifly",
-    "slug": "movifly",
+    "slug": "movifly-app",
     "version": "5.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
